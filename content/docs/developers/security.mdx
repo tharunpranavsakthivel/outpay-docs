@@ -1,0 +1,35 @@
+---
+title: Developer security
+description: Protect keys, wallets, webhook endpoints, and order state.
+audience:
+  - developer
+content_type: how-to
+product_area: security
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 45
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+- Keep API keys and webhook secrets server-side and out of logs.
+- Use the smallest API-key scope set your integration needs.
+- Verify the raw webhook body before JSON-parsing it or acting on it.
+- Enforce your own timestamp tolerance and reject replayed delivery IDs in your handler.
+- Serve webhook endpoints over HTTPS, and confirm the URL belongs to your own system.
+- Confirm the checkout ID and expected amount before updating an order.
+- Store transaction hashes and Outpay request IDs for auditability.
+- Rotate API keys and webhook secrets deliberately; deploy the replacement before revoking the original.
+- Never ask a customer to send a different asset or network to "fix" a payment — see [customer troubleshooting](/docs/merchants/troubleshooting).
+
+<Callout type="error" title="Wallet changes are consequential">
+The merchant payout wallet controls where customers send funds. Require an explicit, independently reviewed wallet change, and verify the wallet-ownership signature before enabling it — see [payout wallet](/docs/merchants/payout-wallet).
+</Callout>
+
+## Related documentation
+
+- [Authentication](/docs/getting-started/authentication) — key format, scopes, and rotation.
+- [Webhook verification](/docs/webhooks/verification) — the signature check referenced above.
+- [Operational security](/docs/operations/security) — the platform-level controls behind this guidance.

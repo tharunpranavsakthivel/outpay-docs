@@ -1,0 +1,115 @@
+---
+title: Integration examples
+description: Direct HTTP examples for JavaScript, Node.js, Next.js, React, and cURL.
+audience:
+  - developer
+content_type: how-to
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+No official SDK is published for any language yet — see [SDK status](/docs/resources/faq#are-sdks-available). The examples below use the verified HTTP API directly and keep the API key on the server.
+
+## JavaScript / Node.js
+
+```js
+const baseUrl = process.env.OUTPAY_API_BASE_URL;
+const apiKey = process.env.OUTPAY_API_KEY;
+
+const response = await fetch(`${baseUrl}/api/v1/checkouts`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${apiKey}`,
+    "Content-Type": "application/json",
+    "Idempotency-Key": "order_12345_checkout",
+  },
+  body: JSON.stringify({
+    amount: "49.99",
+    chain: "base",
+    currency: "USDC",
+    successUrl: "https://merchant.example/success",
+    metadata: { orderId: "order_12345" },
+  }),
+});
+
+if (!response.ok) {
+  const error = await response.json().catch(() => null);
+  throw new Error(error?.error?.message ?? `Outpay returned ${response.status}`);
+}
+
+const checkout = await response.json();
+console.log(checkout.paymentUrl);
+```
+
+## Next.js route handler
+
+```ts
+// app/api/checkout/route.ts
+export async function POST(request: Request) {
+  const { amount, orderId } = (await request.json()) as {
+    amount: string;
+    orderId: string;
+  };
+
+  const response = await fetch(
+    `${process.env.OUTPAY_API_BASE_URL}/api/v1/checkouts`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OUTPAY_API_KEY}`,
+        "Content-Type": "application/json",
+        "Idempotency-Key": `order_${orderId}_checkout`,
+      },
+      body: JSON.stringify({
+        amount,
+        chain: "base",
+        currency: "USDC",
+        successUrl: `${process.env.PUBLIC_SITE_URL}/orders/${orderId}/success`,
+        metadata: { orderId },
+      }),
+    },
+  );
+
+  const body = await response.json();
+  return Response.json(body, { status: response.status });
+}
+```
+
+## React redirect client
+
+The browser calls your own server route, then navigates to the URL your server returns. It must never call Outpay directly with a secret key.
+
+```tsx
+"use client";
+
+export function BuyButton({ orderId }: { orderId: string }) {
+  async function startCheckout() {
+    const response = await fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: "49.99", orderId }),
+    });
+    const checkout = (await response.json()) as { paymentUrl: string };
+    if (!response.ok) throw new Error("Unable to start checkout");
+    window.location.assign(checkout.paymentUrl);
+  }
+
+  return <button onClick={startCheckout}>Pay with USDC</button>;
+}
+```
+
+<Callout type="warning" title="No browser secret">
+The React component only talks to your own route. The Outpay API key stays in your Next.js server environment.
+</Callout>
+
+## Related documentation
+
+- [Checkout sessions](/docs/developers/checkout-sessions) — the full request and response reference.
+- [Idempotency](/docs/developers/idempotency) — safely retry the checkout-creation call above.
+- [Webhook verification](/docs/webhooks/verification) — the server-side counterpart to these examples.

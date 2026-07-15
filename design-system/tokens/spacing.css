@@ -1,0 +1,52 @@
+/*
+ * Spacing / sizing / radius / border-width / icon-size scale.
+ * Extracted verbatim from Supabase's packages/ui/build/css/source/global.css
+ * (supabase/supabase, apache-2.0). Do not snap these to a 4/8px grid —
+ * some steps (2px scale, 1.5px sizing scale) are intentionally off-grid.
+ */
+
+:root {
+  --spacing-scale: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 32px;
+  --spacing-xl: 64px;
+
+  --sizing-scale: 1.5px;
+  --sizing-xs: 4px;
+  --sizing-sm: 6px;
+  --sizing-md: 9px;
+  --sizing-lg: 13.5px;
+  --sizing-xl: 20.25px;
+
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 16px;
+  --radius-panel: 6px;
+  --radius-tableheader: 4px;
+
+  --border-width-none: 0; /* @kind other */
+  --border-width-xs: 1px;
+  --border-width-sm: 2px;
+  --border-width-md: 4px;
+  --border-width-lg: 8px;
+
+  --icon-xs: 12px;
+  --icon-sm: 16px;
+  --icon-md: 18px;
+  --icon-lg: 20px;
+  --icon-width-default: 1px;
+
+  --card-padding-x: 1rem; /* 16px, px-4 */
+  --card-padding-x-md: 1.5rem; /* 24px, px-6 */
+
+  --input-height-tiny: 26px;
+  --input-height-small: 34px;
+  --input-height-medium: 38px;
+  --input-height-large: 42px;
+  --input-height-xlarge: 50px;
+
+  --content-width-max: 1128px;
+}

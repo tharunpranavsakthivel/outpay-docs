@@ -1,0 +1,30 @@
+---
+title: Operational troubleshooting
+description: Diagnose deployment and integration failures.
+audience:
+  - internal
+content_type: how-to
+product_area: operations
+api_version: v1
+status: published
+owner: platform-engineering
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+| Symptom | Check |
+| --- | --- |
+| Database connection error | Confirm `DATABASE_URL` takes precedence and has a valid host and port; check private-network DNS. |
+| Migration mismatch | Run the migration-status and schema-validation commands against a disposable or approved database. |
+| Worker not consuming jobs | Confirm `REDIS_URL`, queue names, worker deployment, and shared database access. |
+| Provider failures | Inspect Alchemy/Chainstack credentials, health checks, failover configuration, and the RPC timeout. |
+| Webhook signature failure | Verify the raw body, secret, timestamp, and the exact `timestamp.body` canonical string. |
+| Dashboard status looks stale | Confirm the web process, Redis, payment listener, reconciler, and provider-webhook intake are all healthy. |
+
+Do not clear or truncate a database as a first diagnostic step. The application's clear script requires an explicit execute flag precisely because it is destructive.
+
+## Related documentation
+
+- [Deployment](/docs/operations/deployment) — the release sequence these checks support.
+- [Environment variables](/docs/operations/environment-variables) — the configuration referenced above.
+- [Merchant troubleshooting](/docs/merchants/troubleshooting) — the merchant-facing symptom table.

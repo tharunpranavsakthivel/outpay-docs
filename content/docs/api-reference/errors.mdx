@@ -1,0 +1,70 @@
+---
+title: Errors
+description: The error envelope and error codes for the public v1 API.
+audience:
+  - developer
+content_type: reference
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 30
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Error envelope
+
+```json
+{
+  "error": {
+    "code": "INVALID_API_KEY",
+    "message": "Provide a valid API key in the Authorization header.",
+    "details": [],
+    "request_id": "req_01JZ8QWA6P9K1Q0D6XQYY2FZQ7"
+  }
+}
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `code` | string | Stable, machine-readable error code. Always present. |
+| `message` | string | Human-readable explanation. |
+| `details` | array | Field-level validation issues. Always present, even when empty. |
+| `request_id` | string | Correlates the request for support. Always present, and also returned in the `x-request-id` response header. |
+
+<Callout type="warning" title="A second error envelope exists">
+Dashboard, admin, and internal routes (everything outside `/api/v1/*`) use a different, legacy JSON error shape without a `request_id` field in the body. Do not build a single client against both surfaces without branching on which base path you called — see [API overview](/docs/api-reference/overview#deliberately-excluded).
+</Callout>
+
+## Error codes
+
+| HTTP | Code | Meaning | Action |
+| --- | --- | --- | --- |
+| 400 | `VALIDATION_FAILED` | The request body, query string, or path parameter failed schema validation, including malformed JSON. | Fix the field(s) listed in `details` and resubmit. |
+| 400 | `INVALID_IDEMPOTENCY_KEY` | `Idempotency-Key` is empty, over 255 characters, or contains a disallowed character. | Use 1–255 characters of letters, digits, `:`, `_`, `-`. |
+| 401 | `INVALID_API_KEY` | The key is missing, malformed, revoked, or does not match. | Check the key value; rotate if it was revoked. |
+| 403 | `FORBIDDEN` | The key lacks the operation's required scope. | Issue a new key with the correct scope — scopes cannot be edited after creation. |
+| 404 | `CHECKOUT_NOT_FOUND` | No checkout matches the given ID for the authenticated merchant. | Verify the ID and that it belongs to this merchant. |
+| 409 | `EXPIRED_IDEMPOTENCY_KEY` | The `Idempotency-Key` was used previously, but its 24-hour replay record has expired. | Decide whether a new checkout is still appropriate, then retry with a new key. |
+| 409 | `IDEMPOTENCY_KEY_REUSED` | The same `Idempotency-Key` was sent with a materially different request body. | Investigate before retrying; use a new key only for a genuinely new request. |
+| 409 | `MERCHANT_NOT_ACTIVE` | The merchant account is deactivated. | Reactivate the store from the Dashboard, or contact support. |
+| 429 | `CHECKOUT_CREATE_RATE_LIMITED` | Exceeded 60 checkout-creation requests/minute for this merchant. | Respect the `Retry-After` header. |
+| 429 | `CHECKOUT_STATUS_RATE_LIMITED` | Exceeded 300 checkout-read requests/minute for this merchant. | Respect `Retry-After`; poll no more often than the hosted checkout page's own 5-second interval. |
+| 429 | `PAYMENTS_LIST_RATE_LIMITED` | Exceeded 120 payment-list requests/minute for this merchant. | Respect `Retry-After`. |
+| 500 | `CHECKOUT_CREATE_FAILED` | Unexpected server-side failure while creating a checkout. | Retry only with the same `Idempotency-Key`. |
+| 500 | `CHECKOUT_READ_FAILED` | Unexpected server-side failure while reading a checkout. | Safe to retry; reads carry no idempotency risk. |
+| 500 | `PAYMENTS_READ_FAILED` | Unexpected server-side failure while listing payments. | Safe to retry. |
+
+<Callout type="info" title="Keep request IDs">
+Log `request_id` alongside your order ID and checkout ID. It is the fastest path to support and incident correlation, and it is present on every response — success or error — via the `x-request-id` header.
+</Callout>
+
+All codes above are **stable during Beta but not guaranteed to survive to v1.0 unchanged**. Match on `error.code`, never on `error.message`, since messages are meant for humans and may be reworded without notice.
+
+## Related documentation
+
+- [Idempotency](/docs/developers/idempotency) — the full behaviour behind the `409` conflict codes.
+- [Authentication](/docs/api-reference/authentication) — avoiding `401`/`403` responses.
+- [Support](/docs/resources/support) — what to include when escalating an error.

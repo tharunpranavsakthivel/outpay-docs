@@ -1,0 +1,29 @@
+---
+title: Team management
+description: Understand current team and access-control boundaries.
+audience:
+  - merchant
+content_type: explanation
+product_area: dashboard
+api_version: v1
+status: published
+owner: merchant-success
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+Merchant membership and account records exist in the application today. This documentation does not claim a complete, polished self-service team-invitation workflow, because no verified invitation surface is confirmed in this release.
+
+Use least privilege:
+
+- Give Dashboard access only to operators who need it.
+- Keep API keys in server-side systems, not shared chat or personal browser profiles.
+- Revoke keys and sessions promptly when a team member leaves.
+- Treat admin access as entirely separate from merchant roles — an owner or administrator on your store has no special access to Outpay's internal admin console.
+
+**Status:** merchant membership is implemented; a polished self-service invitation workflow is **unverified** in this release.
+
+## Related documentation
+
+- [Merchant security](/docs/merchants/security) — day-to-day access hygiene.
+- [Authentication](/docs/getting-started/authentication) — API-key scoping for developer team members.

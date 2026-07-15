@@ -1,0 +1,54 @@
+---
+title: Webhooks
+description: Receive a server-side signal after Outpay confirms a payment.
+audience:
+  - developer
+content_type: explanation
+product_area: webhooks
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+Outpay's merchant webhook is an outbound HTTP request to the endpoint you configure in the Dashboard's **Developers** page. The current dispatcher emits one event type: `checkout.paid`.
+
+<Callout type="warning" title="Only one event is implemented">
+Additional event types have been discussed for a future release, but only `checkout.paid` is dispatched by the current worker. Build and test against `checkout.paid` only, and ignore (acknowledge, do not reject) any event type you do not recognize — see [events](/docs/webhooks/events).
+</Callout>
+
+## Delivery contract
+
+| Property | Value |
+| --- | --- |
+| Body | Flat JSON: `event`, `checkout_ref`, `amount`, `currency`, `confirmed_at`, `tx_hash`. |
+| `X-Outpay-Event` | The event type, currently always `checkout.paid`. |
+| `X-Outpay-Delivery-ID` | A unique identifier for this delivery attempt. |
+| `X-Outpay-Timestamp` | A Unix timestamp string. |
+| `X-Outpay-Signature` | `v1=<hex>` — HMAC-SHA256 over `{timestamp}.{body}`. |
+| Timeout | 10 seconds per attempt. Redirects are not followed. |
+| Retries | Up to 7 attempts over roughly 15 hours (see the schedule below). |
+| Auto-disable | After 3 consecutive full failure cycles, the endpoint is disabled until you re-save it. |
+
+## Retry schedule
+
+| Attempt | Delay before this attempt |
+| ---: | ---: |
+| 1 | Immediately |
+| 2 | 30 seconds |
+| 3 | 2 minutes |
+| 4 | 10 minutes |
+| 5 | 30 minutes |
+| 6 | 2 hours |
+| 7 | 12 hours |
+
+A failed delivery can also be retried manually from the Dashboard. Because retries (automatic or manual) redeliver the same logical event, your handler must be idempotent — see [receive and process webhooks](/docs/guides/receive-webhooks).
+
+## Related documentation
+
+- [Events](/docs/webhooks/events) — the `checkout.paid` payload in full.
+- [Verify webhook signatures](/docs/webhooks/verification) — the signature check your handler must perform.
+- [Receive and process webhooks](/docs/guides/receive-webhooks) — a complete, idempotent handler pattern.

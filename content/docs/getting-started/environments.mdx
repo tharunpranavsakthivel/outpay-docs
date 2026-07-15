@@ -1,0 +1,45 @@
+---
+title: Environments
+description: Separate test and live credentials, and configure your deployment's base URL.
+audience:
+  - developer
+content_type: reference
+product_area: platform
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+The public API route prefix is `/api/v1`. Outpay does not publish a canonical hosted API hostname — configure the origin of your own Outpay deployment rather than copying a placeholder host into a production integration.
+
+```dotenv
+OUTPAY_API_BASE_URL=https://your-outpay-host.example
+OUTPAY_API_KEY=ck_test_...
+```
+
+## Test and live keys
+
+API keys carry `test` or `live` in both their token format and their database record. Keep each environment's key, webhook secret, database, and merchant wallet configuration separate.
+
+| Environment | Use | Status |
+| --- | --- | --- |
+| `test` key | Controlled integration testing | Available in the key model; a separate sandbox network is not implemented |
+| `live` key | Production-style merchant configuration | Available in the key model; production readiness is not independently verified |
+
+<Callout type="warning" title="No sandbox network">
+Both `test` and `live` keys authenticate against the same Base-mainnet payment matcher. A `test` key changes which credential is in play — it is not evidence of a separate test blockchain. Do not send real funds while validating an integration unless you intend for them to settle.
+</Callout>
+
+## Server configuration
+
+The application resolves its database connection in this order: `DATABASE_URL`, then `DATABASE_PUBLIC_URL`, then the individual PostgreSQL component variables. Worker deployments additionally require Redis and blockchain-provider configuration. See [environment variables](/docs/operations/environment-variables) for the full operator inventory.
+
+## Related documentation
+
+- [Authentication](/docs/getting-started/authentication) — API key format and scopes.
+- [Environment variables](/docs/operations/environment-variables) — the full configuration reference for operators.
+- [Production checklist](/docs/guides/production-checklist) — what to confirm before moving to live mode.

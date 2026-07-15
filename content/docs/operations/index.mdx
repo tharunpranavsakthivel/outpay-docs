@@ -1,0 +1,31 @@
+---
+title: Operations
+description: Deploy, configure, and troubleshoot the Outpay application.
+audience:
+  - internal
+content_type: explanation
+product_area: operations
+api_version: v1
+status: published
+owner: platform-engineering
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+
+## Who this is for
+
+This section is for whoever deploys and operates an Outpay instance — not for merchants or third-party API integrators. See [merchant guide](/docs/merchants) or [developer documentation](/docs/developers) instead if that describes you.
+
+<Cards>
+  <Card href="/docs/operations/environment-variables" title="Environment variables" description="Separate credentials, database, providers, queues, and storage." />
+  <Card href="/docs/operations/deployment" title="Deployment" description="Use the repository's Bun and Railway deployment boundaries." />
+  <Card href="/docs/operations/security" title="Operational security" description="The platform-level controls behind every other security guide." />
+  <Card href="/docs/operations/troubleshooting" title="Troubleshooting" description="Diagnose configuration and worker failures." />
+</Cards>
+
+## Related documentation
+
+- [System status](/docs/platform/system-status) — the current capability and readiness matrix.
+- [Production checklist](/docs/guides/production-checklist) — the integrator-facing counterpart to this section.

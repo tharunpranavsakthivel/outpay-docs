@@ -1,0 +1,29 @@
+---
+title: API authentication
+description: Authenticate public v1 requests with a merchant-scoped bearer key.
+audience:
+  - developer
+content_type: reference
+product_area: security
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 30
+---
+
+See [authentication](/docs/getting-started/authentication) for key creation, rotation, and scope guidance. This page covers the request-level contract.
+
+```bash
+curl "$OUTPAY_API_BASE_URL/api/v1/payments" \
+  -H "Authorization: Bearer $OUTPAY_API_KEY"
+```
+
+The server hashes the secret portion of the key for comparison, checks the API key's active status and the merchant's status, then updates the key's `last_used_at` timestamp. Comparison is timing-safe, and an invalid prefix or secret both return the same `401 INVALID_API_KEY` response — no detail is leaked about which part of the credential was wrong.
+
+No public-key or browser-based authentication flow exists in the current route handlers. Do not place a secret key in a React component, a browser bundle, or any client-side environment variable.
+
+## Related documentation
+
+- [Authentication](/docs/getting-started/authentication) — key format, scopes, and rotation.
+- [Errors](/docs/api-reference/errors) — authentication and authorization error codes.

@@ -1,0 +1,11 @@
+{
+  "title": "Operations",
+  "pages": [
+    "index",
+    "environment-variables",
+    "deployment",
+    "security",
+    "troubleshooting"
+  ],
+  "defaultOpen": false
+}

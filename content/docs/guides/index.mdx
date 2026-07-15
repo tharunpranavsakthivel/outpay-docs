@@ -1,0 +1,23 @@
+---
+title: Guides
+description: Task-oriented recipes for building and operating an Outpay integration.
+audience:
+  - developer
+content_type: explanation
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+
+<Cards>
+  <Card href="/docs/guides/create-first-payment" title="Create your first payment" description="Wire an order to a hosted checkout and a verified status." />
+  <Card href="/docs/guides/receive-webhooks" title="Receive webhooks" description="Build a safe, idempotent webhook endpoint." />
+  <Card href="/docs/guides/handle-expired-payments" title="Handle an expired checkout" description="Recover safely when a customer pays after the window closes." />
+  <Card href="/docs/guides/test-an-integration" title="Test an integration locally" description="Validate your adapter without a browser redirect or fake network claims." />
+  <Card href="/docs/guides/production-checklist" title="Production checklist" description="Review operational controls before accepting real orders." />
+</Cards>

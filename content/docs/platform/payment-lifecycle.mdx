@@ -1,0 +1,44 @@
+---
+title: Payment lifecycle
+description: How a checkout moves from created to paid or terminal.
+audience:
+  - developer
+  - merchant
+content_type: explanation
+product_area: payments
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 180
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+```text
+pending → detected → paid
+   │         │
+   ├─────────┴→ failed (invalid match)
+   └──────────→ expired (window closed)
+```
+
+| State | When it occurs | Fulfil? |
+| --- | --- | --- |
+| `pending` | The checkout exists and awaits a matching transfer. | No |
+| `detected` | A transfer matches enough rules, but confirmation is incomplete. | No |
+| `paid` | The confirmation threshold is met and the payment is recorded. | Yes, exactly once |
+| `failed` | The matcher rejected an invalid amount, currency, network, or other mismatch. | No |
+| `expired` | The checkout's time-to-live, or its detected-payment grace period, elapsed. | No — investigate a late transfer separately |
+| `deactivated` | A merchant or operator deactivated the checkout. | No |
+
+The status machine also tracks internal payment-intent states — `awaiting_payment`, `detected`, `confirmed`, `mismatched`, `expired` — that are not a promise every internal value appears in the public API. See [schemas](/docs/api-reference/schemas) for exactly what each API surface returns.
+
+<Callout type="warning" title="Underpayment and overpayment">
+The matcher has explicit amount-mismatch handling, including a configurable tolerance for a slight overpayment. There is no merchant-facing automatic refund or remediation workflow — investigate a mismatch manually using the checkout reference and transaction hash.
+</Callout>
+
+## Related documentation
+
+- [Confirmations and finality](/docs/platform/confirmations) — why `detected` is not `paid`.
+- [Transactions](/docs/merchants/transactions) — the merchant-facing view of this same lifecycle.
+- [Handle an expired checkout](/docs/guides/handle-expired-payments) — recovering from the `expired` terminal state.

@@ -1,0 +1,153 @@
+---
+title: v0.1 Beta
+description: Initial documented beta release of the Outpay non-custodial checkout platform.
+audience:
+  - developer
+  - merchant
+content_type: reference
+product_area: changelog
+api_version: v1
+status: published
+owner: documentation
+last_reviewed: 2026-07-15
+review_cycle_days: 30
+version: 0.1.0-beta
+release_date: Not verified
+release_type: minor
+breaking_changes: false
+action_required: false
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+> **Release channel:** Beta
+> **Semantic version:** `0.1.0-beta`
+> **Release date:** Not verified
+> **API stability:** Subject to change
+
+No git tag or GitHub release exists for this version at the time of writing. This page describes the state of the application at the commit this documentation set was generated from.
+
+## Release summary
+
+v0.1 Beta is Outpay's first documented release: a non-custodial checkout and payment-verification platform for accepting native USDC on Base. It is intended for **internal testing, staging, and controlled beta merchants** — not as a drop-in production payments processor. Outpay's own release notes state the payment-verification pipeline is still undergoing audit remediation.
+
+- **Supported payment flow:** a merchant creates a checkout (Dashboard or public API) → the customer pays through Outpay Checkout → a provider webhook and/or RPC reconciliation detects the transfer → the payment-matching worker confirms it → the merchant is notified by a signed webhook, or can poll the API.
+- **Supported network:** Base mainnet only.
+- **Supported currency:** native USDC only.
+
+## Who is affected
+
+- Merchants testing stablecoin payments.
+- Developers integrating Outpay Checkout or the public v1 API.
+- Internal support and operations teams.
+
+## Action required
+
+No migration is required. This is the first public Beta release.
+
+## Added
+
+- Merchant onboarding with store details and a signed payout-wallet ownership proof.
+- Database-backed Dashboard: checkouts, payments, settings, API-key management, and webhook configuration.
+- Public v1 API for creating and reading checkouts, and listing payments.
+- Outpay Checkout with Base/USDC payment instructions, a QR code and wallet deep-link, live polling, a countdown timer, and server-enforced expiry.
+- Base native-USDC detection through provider-webhook intake and RPC-reconciliation workers, with provider failover.
+- Scoped, environment-aware (`test`/`live`) API keys with hashing, timing-safe comparison, and revocation.
+- Signed `checkout.paid` merchant webhooks, with delivery retries and Dashboard-driven manual retry.
+- Usage-metering and billing-accounting tables (no invoicing or payment-collection integration yet).
+
+## Changed
+
+No prior documented release exists to compare against.
+
+## Improved
+
+Not applicable for a first release.
+
+## Fixed
+
+Not applicable for a first release.
+
+## Deprecated
+
+No deprecations in this release.
+
+## Removed
+
+Nothing has been removed in this release.
+
+## Security
+
+- Bearer API-key authentication with SHA-256-hashed secrets and timing-safe comparison.
+- HMAC-SHA256 webhook signature verification, both inbound (provider → Outpay) and outbound (Outpay → merchant).
+- AES-256-GCM encryption for stored merchant webhook signing secrets.
+- SSRF protection on merchant-configured webhook URLs, including cloud-metadata-range blocking.
+- Dual-layer structured-log redaction.
+- Parameterized SQL throughout.
+
+## API changes
+
+```text
+POST /api/v1/checkouts
+GET  /api/v1/checkouts/{id}
+GET  /api/v1/payments
+```
+
+## Dashboard changes
+
+Merchant Dashboard, checkout list/detail, payments list, settings (profile, payout wallet, logo, webhook, store status), and a developer console (API keys, webhook configuration and delivery history) are all database-backed with no fixture data standing in for real functionality.
+
+## Checkout changes
+
+Outpay Checkout displays amount, network, recipient wallet, a QR code, a wallet deep-link, a live countdown, and a polled payment status (`waiting`/`detected`/`paid`/`expired`). Polling only — no WebSocket or Server-Sent Events. Expiry is enforced server-side on every read, not only by a background sweep.
+
+## SDK changes
+
+No SDK package exists for any language in this release. See [FAQ — are SDKs available?](/docs/resources/faq#are-sdks-available).
+
+## Documentation changes
+
+- Added the developer quickstart, API reference, webhook-verification guidance, and payment-status documentation.
+- Added merchant onboarding, payment-link, and troubleshooting guides.
+- Added this changelog.
+
+## Known limitations
+
+1. Payment-verification production readiness is explicitly unresolved.
+2. Only Base mainnet and native USDC are implemented.
+3. Only the `checkout.paid` merchant-webhook event is dispatched; other event types are not yet live.
+4. Refunds, official SDKs, an OpenAPI specification, automated reorg handling, and merchant-facing mismatch remediation are not implemented or verified.
+5. Production database backup and restore is explicitly unverified in the deployment record.
+6. API and webhook status/payload vocabularies may change before v1.0.
+
+<Callout type="warning" title="Beta releases do not guarantee backward compatibility">
+Review this changelog before updating a deployed Outpay instance or a merchant integration.
+</Callout>
+
+## Breaking-change risk
+
+Treat the following as unstable before v1.0:
+
+- API routes and their versioning scheme — only `/api/v1/` exists today.
+- JSON field names on every documented object — see [schemas](/docs/api-reference/schemas).
+- Validation rules and error codes.
+- The two divergent JSON error-response envelopes, which may be unified.
+- Webhook event names and payload shape — additional event types are expected.
+- Database schema, including status-enum value sets and table structure.
+- Payment/checkout status vocabulary — three vocabularies already coexist across the internal database, the public API, and Outpay Checkout.
+- Environment-variable names.
+- Error codes.
+
+## Upgrade guidance
+
+v0.1 Beta is the first documented Outpay release. No prior documented-release migration guide exists.
+
+## Support
+
+Provide the request ID, checkout reference, payment reference, or transaction hash — see [support](/docs/resources/support).
+
+## Related documentation
+
+- [Unreleased](/docs/changelog/unreleased) — changes since this release.
+- [System status](/docs/platform/system-status) — the current, living capability matrix.
+- [Production checklist](/docs/guides/production-checklist) — what to verify before relying on this release for real funds.

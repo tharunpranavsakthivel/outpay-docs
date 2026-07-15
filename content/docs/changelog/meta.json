@@ -1,0 +1,5 @@
+{
+  "title": "Changelog",
+  "pages": ["index", "unreleased", "v0.1-beta"],
+  "defaultOpen": false
+}

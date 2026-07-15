@@ -1,0 +1,33 @@
+---
+title: Support
+description: Give operators the evidence needed to investigate a payment issue.
+audience:
+  - developer
+  - merchant
+  - support
+content_type: how-to
+product_area: overview
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 90
+---
+
+## Include
+
+- The checkout reference and your merchant/store identifier.
+- The API request ID, if the issue began with an API request.
+- The transaction hash, token contract, network, amount, and recipient.
+- Approximate timestamps and the observed Dashboard/API status.
+- The webhook delivery ID and response code, if notification failed.
+
+## Never include
+
+API keys, webhook secrets, wallet private keys, database connection strings, or customer authentication cookies. Redact wallet addresses only when the support channel specifically requires it — the full recipient address is normally necessary for payment reconciliation.
+
+## Related documentation
+
+- [Merchant troubleshooting](/docs/merchants/troubleshooting) — diagnose common issues before escalating.
+- [Operational troubleshooting](/docs/operations/troubleshooting) — the operator-facing diagnostic table.
+- [Errors](/docs/api-reference/errors) — what a request ID and error code tell support.

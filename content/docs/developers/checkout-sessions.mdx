@@ -1,0 +1,100 @@
+---
+title: Checkout sessions
+description: Create a hosted checkout for a merchant order.
+audience:
+  - developer
+content_type: how-to
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { TypeTable } from "fumadocs-ui/components/type-table";
+
+## Who this is for
+
+Developers integrating checkout creation into an order-management system or backend service.
+
+## Before you begin
+
+- A server-side API key with the `checkouts:create` scope.
+- A stable identifier for the order you are creating a checkout for, to use as both the idempotency key and the `metadata.orderId` value.
+
+## `POST /api/v1/checkouts`
+
+Creates a merchant-scoped checkout. The route validates `chain: "base"`, `currency: "USDC"`, a positive decimal amount with at most two decimal places, a valid `successUrl`, and the optional URL/email fields.
+
+<TypeTable type={{
+  "amount": { type: "string", required: true, description: "Positive decimal amount, for example `49.99`; up to two decimal places." },
+  "chain": { type: "\"base\"", required: true, description: "Base network slug." },
+  "currency": { type: "\"USDC\"", required: true, description: "USDC currency identifier." },
+  "successUrl": { type: "string<url>", required: true, description: "Absolute HTTPS URL used after the hosted checkout flow." },
+  "cancelUrl": { type: "string<url> | null", description: "Optional absolute HTTPS URL; empty input is normalized to null." },
+  "customerEmail": { type: "string<email> | null", description: "Optional customer email; empty input is normalized to null." },
+  "metadata": { type: "object", description: "String-keyed JSON metadata. `metadata.orderId` is used as the Dashboard label when present." }
+}} />
+
+```json title="Request"
+{
+  "amount": "49.99",
+  "chain": "base",
+  "currency": "USDC",
+  "successUrl": "https://merchant.example/orders/order_12345/success",
+  "cancelUrl": "https://merchant.example/orders/order_12345/cancel",
+  "customerEmail": "customer@example.com",
+  "metadata": { "orderId": "order_12345" }
+}
+```
+
+```json title="201 response"
+{
+  "amount": "49.99",
+  "chain": "base",
+  "currency": "USDC",
+  "expiresAt": "2026-07-15T12:00:00.000Z",
+  "id": "chk_4f21a9c3b7e04d18",
+  "paymentUrl": "https://your-outpay-host.example/checkout/chk_4f21a9c3b7e04d18",
+  "recipient": {
+    "address": "0xMerchantPayoutWallet",
+    "tokenContract": "0x833589fCD6eDb6E08f4C7C32D4f71b54bdA02913"
+  },
+  "status": "pending_payment"
+}
+```
+
+The response fields above match the route's response interface exactly. The displayed wallet is the merchant's registered payout wallet — do not substitute a wallet address from your own order system.
+
+## `GET /api/v1/checkouts/{id}`
+
+Returns the merchant-owned checkout, including `payment`, `recipient`, `metadata`, redirect URLs, expiry, and status. A checkout outside the authenticated merchant's scope returns `CHECKOUT_NOT_FOUND` rather than leaking another merchant's resource.
+
+```bash
+curl "$OUTPAY_API_BASE_URL/api/v1/checkouts/chk_4f21a9c3b7e04d18" \
+  -H "Authorization: Bearer $OUTPAY_API_KEY"
+```
+
+<Callout type="warning" title="Status vocabulary is beta">
+The public API, the hosted checkout page, and the internal database currently expose overlapping but different status vocabularies. Consume the values returned by this endpoint and treat the contract as beta-stable until those vocabularies are consolidated.
+</Callout>
+
+## Expected result
+
+Your server has a checkout reference and a `paymentUrl` to redirect the customer to. Reading the checkout back later reflects the current status and, once a transfer is detected, a `payment` object.
+
+## Common problems
+
+| Problem | Likely cause | Next step |
+| --- | --- | --- |
+| `400 VALIDATION_FAILED` | Amount has more than two decimal places, or a URL/email field is malformed. | Check the field named in `error.details`. |
+| `409 MERCHANT_NOT_ACTIVE` | The merchant account is deactivated. | Reactivate the store, or contact support. |
+| Checkout looks correct but the customer never sees `paymentUrl` | The customer was redirected to a URL your server built itself instead of the one returned by Outpay. | Always redirect to the exact `paymentUrl` from the response — see [the recommended lifecycle](/docs/developers). |
+
+## Related documentation
+
+- [Idempotency](/docs/developers/idempotency) — safely retry this call after a timeout.
+- [API reference — checkouts](/docs/api-reference/checkout-sessions) — the strict endpoint contract.
+- [Webhooks](/docs/webhooks) — get notified instead of polling for `paid`.

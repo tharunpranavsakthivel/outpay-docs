@@ -1,0 +1,17 @@
+<!-- @dsCard group="Spacing" viewport="700x150" name="Shadow Scale" subtitle="Hairline shadows, not deep drop-shadows — elevation reads as border+lightness step" -->
+<!DOCTYPE html>
+<html data-theme="light">
+<head>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:20px;background:var(--background-default);font-family:var(--font-mono);font-size:10px;color:var(--foreground-lighter);display:flex;gap:20px;}
+  .box{background:var(--card);border-radius:8px;width:120px;height:64px;display:flex;align-items:center;justify-content:center;}
+</style>
+</head>
+<body>
+  <div class="box" style="box-shadow:var(--shadow-xs)">xs</div>
+  <div class="box" style="box-shadow:var(--shadow-sm)">sm</div>
+  <div class="box" style="box-shadow:var(--shadow-md)">md</div>
+  <div class="box" style="box-shadow:var(--shadow-lg)">lg</div>
+</body>
+</html>

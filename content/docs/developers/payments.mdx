@@ -1,0 +1,55 @@
+---
+title: Payments
+description: Read matched payments and reconcile order state.
+audience:
+  - developer
+content_type: how-to
+product_area: payments
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+## `GET /api/v1/payments`
+
+Lists payments belonging to the authenticated merchant. It accepts `limit` (1–100) and an optional `status` filter: `paid`, `pending`, `failed`, or `expired`.
+
+```bash
+curl "$OUTPAY_API_BASE_URL/api/v1/payments?status=paid&limit=25" \
+  -H "Authorization: Bearer $OUTPAY_API_KEY"
+```
+
+```json
+{
+  "data": [
+    {
+      "id": "pay_9d21f7",
+      "checkoutId": "chk_4f21a9c3b7e04d18",
+      "status": "paid",
+      "amount": "49.99",
+      "currency": "USDC",
+      "chain": "base",
+      "txHash": "0xabc123...",
+      "createdAt": "2026-07-15T11:40:00.000Z"
+    }
+  ]
+}
+```
+
+The exact payment projection is owned by the application's payments route. Treat additional fields as additive, and do not assume a field your deployment does not return — see [schemas](/docs/api-reference/schemas).
+
+## Fulfilment rule
+
+Persist your order transition using your own order ID from `metadata`. Verify the webhook signature, confirm the event refers to the expected checkout, and make the fulfilment update idempotent. A repeated webhook, or a later status read, must never ship the same order twice.
+
+## Not implemented
+
+There is no refund endpoint, subscription API, official SDK, or multi-chain payment route in the verified v0.1 surface. Do not document a workaround as if it were a supported feature — see [settlement](/docs/platform/settlement) for why refunds are out of scope for the current non-custodial model.
+
+## Related documentation
+
+- [Payments — API reference](/docs/api-reference/payments) — the strict endpoint contract.
+- [Receive and process webhooks](/docs/guides/receive-webhooks) — the recommended fulfilment path.
+- [Handle an expired checkout](/docs/guides/handle-expired-payments) — recovering from a late or mismatched transfer.

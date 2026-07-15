@@ -1,0 +1,33 @@
+---
+title: Transactions
+description: Understand paid, pending, failed, and expired payment states.
+audience:
+  - merchant
+content_type: reference
+product_area: payments
+api_version: v1
+status: published
+owner: merchant-success
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+| Status | What it means | What you should do |
+| --- | --- | --- |
+| Pending | No confirmed matching payment yet. | Wait, then inspect the customer's transaction details if they report having paid. |
+| Detected | A matching transfer was found but confirmation is incomplete. | Do not fulfil the order until it becomes paid. |
+| Paid | Outpay confirmed the matching transfer. | Fulfil the order once; use your own order record to prevent duplicate fulfilment. |
+| Failed | The transfer did not match the checkout's rules (wrong amount, token, or network). | Review network, currency, amount, and timing before contacting support. |
+| Expired | The checkout's expiry window closed before a matching payment arrived. | Create a new checkout — do not ask the customer to reuse an expired link. |
+
+<Callout type="warning" title="Do not settle from a screenshot">
+Use the Dashboard status, a verified webhook, or a server-side API read. A wallet screenshot from the customer is not confirmation that Outpay matched the transfer.
+</Callout>
+
+## Related documentation
+
+- [Payment lifecycle](/docs/platform/payment-lifecycle) — the full state machine behind this table.
+- [Troubleshooting](/docs/merchants/troubleshooting) — what to do when a status looks wrong.
+- [Handle an expired checkout](/docs/guides/handle-expired-payments) — recovering from a late transfer.

@@ -1,0 +1,12 @@
+{
+  "title": "Guides",
+  "pages": [
+    "index",
+    "create-first-payment",
+    "receive-webhooks",
+    "handle-expired-payments",
+    "test-an-integration",
+    "production-checklist"
+  ],
+  "defaultOpen": false
+}

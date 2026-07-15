@@ -1,0 +1,52 @@
+---
+title: Create your first payment
+description: Connect an order record to a hosted Outpay checkout.
+audience:
+  - developer
+content_type: tutorial
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+
+## Who this is for
+
+Developers connecting an existing order-management system to Outpay for the first time.
+
+## Before you begin
+
+- An API key with the `checkouts:create` scope.
+- An internal order ID you can pass through as metadata and use as an idempotency key.
+
+## Steps
+
+<Steps>
+<Step>Generate an API key with `checkouts:create` and keep it server-side.</Step>
+<Step>Create one checkout with the order ID in `metadata.orderId` and a stable `Idempotency-Key`.</Step>
+<Step>Persist the returned checkout ID, payment URL, amount, and expiry alongside your order.</Step>
+<Step>Redirect the customer to `paymentUrl`.</Step>
+<Step>Wait for `checkout.paid`, after verifying its signature.</Step>
+<Step>Fulfil the order exactly once, using a unique order-state transition.</Step>
+</Steps>
+
+## Expected result
+
+The customer pays Base USDC directly to the merchant's wallet, and your server can reconcile the order from the checkout reference and transaction hash alone.
+
+## Common problems
+
+| Problem | Likely cause | Next step |
+| --- | --- | --- |
+| Checkout creation returns `409` | An idempotency key was reused with a different order payload, or the merchant is inactive. | See [errors](/docs/api-reference/errors) for the exact code and required action. |
+| No webhook ever arrives | No webhook endpoint is configured yet. | Configure one from **Developers** before relying on webhooks; poll as a fallback in the meantime. |
+
+## Related documentation
+
+- [Quickstart](/docs/getting-started/quickstart) — the same flow with full request/response examples.
+- [Receive and process webhooks](/docs/guides/receive-webhooks) — the fulfilment step in detail.
+- [Idempotency](/docs/developers/idempotency) — safely retrying the create-checkout call.

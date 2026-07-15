@@ -1,0 +1,35 @@
+---
+title: Settlement
+description: Understand direct wallet settlement and what Outpay does not do.
+audience:
+  - developer
+  - merchant
+content_type: explanation
+product_area: wallets
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 180
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+Settlement is direct, wallet-to-wallet:
+
+1. The merchant registers a payout wallet and proves ownership of it.
+2. Outpay embeds that recipient address in every new checkout.
+3. The customer sends USDC on Base to the recipient address.
+4. Outpay's payment matcher verifies the transfer and notifies the merchant.
+
+Outpay does not custody customer funds, hold a merchant balance, sweep funds, or execute a payout transaction anywhere in this flow.
+
+<Callout type="warning" title="No refund API">
+Refunds are not implemented. If a customer sends an incorrect amount, or pays after a checkout has expired, preserve the transaction evidence and use an operator-approved manual remediation process — do not represent a manual wallet transfer as an Outpay product feature.
+</Callout>
+
+## Related documentation
+
+- [Payout wallet](/docs/merchants/payout-wallet) — configuring the wallet this page describes.
+- [Payment lifecycle](/docs/platform/payment-lifecycle) — how a transfer is matched before settlement.
+- [Handle an expired checkout](/docs/guides/handle-expired-payments) — the recommended response to a late transfer.

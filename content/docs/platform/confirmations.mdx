@@ -1,0 +1,32 @@
+---
+title: Confirmations and finality
+description: Why a detected transfer is not immediately a paid checkout.
+audience:
+  - developer
+  - merchant
+content_type: explanation
+product_area: platform
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 180
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+A transaction can be visible on-chain before Outpay considers it confirmed. Outpay records the detected transfer, then rechecks its confirmation depth before moving the checkout to `paid`.
+
+The required confirmation count is set by Outpay's payment-matching policy. This documentation does not publish a single universal number, because the confirmation threshold is not exposed as a stable public API field and may vary by deployment.
+
+<Callout type="info" title="Customer messaging">
+Show "payment detected" as pending confirmation. Do not tell a customer their order is complete until your server receives and verifies `checkout.paid`, or a server-side read reports the paid state.
+</Callout>
+
+Automated reorg handling is not verified in the current release. Keep a reconciliation path, and avoid irreversible fulfilment actions until your own risk policy is satisfied — see [production checklist](/docs/guides/production-checklist).
+
+## Related documentation
+
+- [Payment lifecycle](/docs/platform/payment-lifecycle) — where confirmation sits in the full state machine.
+- [Webhooks](/docs/webhooks) — get notified once confirmation is complete, instead of polling.
+- [System status](/docs/platform/system-status) — the current status of reorg handling.

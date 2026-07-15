@@ -1,0 +1,149 @@
+---
+title: Quickstart
+description: Create a checkout and redirect your customer to Outpay Checkout.
+audience:
+  - developer
+content_type: tutorial
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+
+Create a test-mode checkout from your server and redirect a customer to Outpay Checkout.
+
+## Who this is for
+
+This tutorial is for developers integrating the public v1 API from a trusted server. If you only need a shareable payment link and no code, see [create a payment link](/docs/merchants/payment-links) instead.
+
+## Before you begin
+
+- An onboarded Outpay merchant with a verified payout wallet.
+- An active API key with the `checkouts:create` scope.
+- A server-side environment variable holding the key — never a browser variable.
+- An HTTPS success URL. `cancelUrl` is optional.
+
+<Callout type="warning" title="Beta integration">
+Use a test-mode API key and a controlled merchant account while the payment-verification pipeline is under audit remediation. The API key format is environment-aware (`test`/`live`), but a separate sandbox blockchain network is not implemented — every key ultimately matches transfers on Base mainnet.
+</Callout>
+
+<Steps>
+<Step>
+
+### Store the key server-side
+
+```bash
+export OUTPAY_API_KEY="ck_test_replace_me"
+export OUTPAY_API_BASE_URL="https://your-outpay-host.example"
+```
+
+Do not expose this value in browser JavaScript, source control, or a client-side environment variable.
+
+</Step>
+<Step>
+
+### Create a checkout
+
+<Tabs items={["cURL", "TypeScript"]}>
+<Tab>
+
+```bash
+curl "$OUTPAY_API_BASE_URL/api/v1/checkouts" \
+  -X POST \
+  -H "Authorization: Bearer $OUTPAY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: order_12345_checkout" \
+  --data '{
+    "amount": "49.99",
+    "chain": "base",
+    "currency": "USDC",
+    "successUrl": "https://merchant.example/orders/12345/success",
+    "cancelUrl": "https://merchant.example/orders/12345/cancel",
+    "customerEmail": "customer@example.com",
+    "metadata": {"orderId": "order_12345"}
+  }'
+```
+
+</Tab>
+<Tab>
+
+```ts
+type Checkout = {
+  id: string;
+  paymentUrl: string;
+  status: string;
+  expiresAt: string;
+};
+
+const response = await fetch(
+  `${process.env.OUTPAY_API_BASE_URL}/api/v1/checkouts`,
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.OUTPAY_API_KEY}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": "order_12345_checkout",
+    },
+    body: JSON.stringify({
+      amount: "49.99",
+      chain: "base",
+      currency: "USDC",
+      successUrl: "https://merchant.example/orders/12345/success",
+      cancelUrl: "https://merchant.example/orders/12345/cancel",
+      metadata: { orderId: "order_12345" },
+    }),
+  },
+);
+
+if (!response.ok) throw new Error(`Outpay error: ${response.status}`);
+const checkout = (await response.json()) as Checkout;
+```
+
+</Tab>
+</Tabs>
+
+</Step>
+<Step>
+
+### Redirect the customer
+
+Use the returned `paymentUrl` directly as a server-generated redirect target. Do not construct the URL yourself from a checkout ID.
+
+```ts
+return Response.redirect(checkout.paymentUrl);
+```
+
+</Step>
+<Step>
+
+### Confirm on your server
+
+Handle the signed `checkout.paid` webhook (see [receive and verify webhooks](/docs/webhooks/verification)). You can also poll `GET /api/v1/checkouts/{id}` as a reconciliation or fallback path, but never fulfil an order from the customer's browser redirect alone — see [why the redirect is not proof of payment](/docs/developers/checkout-sessions).
+
+</Step>
+</Steps>
+
+## Expected result
+
+The customer sees Outpay Checkout with the amount, the Base network, the merchant's recipient wallet, a QR code and wallet deep-link, an expiry countdown, and a live payment status. Once a matching transfer is confirmed, the checkout becomes `paid` and Outpay queues a `checkout.paid` webhook to your configured endpoint.
+
+## Common problems
+
+| Problem | Likely cause | Next step |
+| --- | --- | --- |
+| `403 FORBIDDEN` on creation | The API key is missing the `checkouts:create` scope. | Confirm the key's scopes in **Developers**; scopes cannot be edited after creation, so issue a new key if needed. |
+| `409 MERCHANT_NOT_ACTIVE` | The merchant account is deactivated. | Reactivate the store from **Settings**, or contact support. |
+| Checkout never leaves `pending` | The customer has not yet sent a matching transfer, or it has not reached the required confirmations. | Confirm the customer sent USDC on Base to the displayed address; see [transactions](/docs/merchants/transactions). |
+| No `checkout.paid` webhook arrives | No webhook endpoint is configured, or delivery failed and retries are still in progress. | Check **Developers → Webhooks** delivery history, or poll `GET /api/v1/checkouts/{id}` as a fallback. |
+
+## Related documentation
+
+- [Create a checkout](/docs/developers/checkout-sessions) — the full request and response reference.
+- [Verify webhook signatures](/docs/webhooks/verification) — confirm a `checkout.paid` event before fulfilment.
+- [Idempotency](/docs/developers/idempotency) — retry checkout creation safely.

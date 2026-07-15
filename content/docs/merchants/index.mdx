@@ -1,0 +1,39 @@
+---
+title: Merchant guide
+description: Set up your store and accept USDC from the Outpay Dashboard.
+audience:
+  - merchant
+content_type: explanation
+product_area: dashboard
+api_version: v1
+status: published
+owner: merchant-success
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Who this is for
+
+This guide is for merchant owners and team members using the Outpay Dashboard — no coding required.
+
+<Cards>
+  <Card href="/docs/merchants/onboarding" title="Onboarding" description="Create a store and verify its payout wallet." />
+  <Card href="/docs/merchants/dashboard" title="Dashboard overview" description="Find the surfaces available to a merchant account." />
+  <Card href="/docs/merchants/payment-links" title="Payment links" description="Create a hosted payment request and share it with a customer." />
+  <Card href="/docs/merchants/payout-wallet" title="Payout wallet" description="Configure the wallet that receives direct USDC transfers." />
+  <Card href="/docs/merchants/transactions" title="Transactions" description="Read payment status and investigate pending or expired checkouts." />
+  <Card href="/docs/merchants/troubleshooting" title="Troubleshooting" description="Resolve invalid amounts, wrong networks, and webhook failures." />
+</Cards>
+
+<Callout type="warning" title="Customer payment warning">
+Outpay v0.1 supports native USDC on Base only. A customer who sends another currency or uses another network may create a payment Outpay cannot match automatically.
+</Callout>
+
+## Related documentation
+
+- [Payment lifecycle](/docs/platform/payment-lifecycle) — what each payment status means.
+- [Merchant security](/docs/merchants/security) — protect the wallet, keys, and webhook secrets.
+- [Support](/docs/resources/support) — what to include when you escalate a payment problem.

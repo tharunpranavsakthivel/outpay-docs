@@ -1,0 +1,41 @@
+---
+title: Test an integration locally
+description: Validate your adapter without relying on a browser redirect or fake blockchain claims.
+audience:
+  - developer
+content_type: how-to
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Test layers
+
+- Unit-test request serialization and error mapping.
+- Mock `POST /api/v1/checkouts` and assert a stable idempotency key is sent.
+- Test a simulated timeout followed by an identical retry, and confirm the response is replayed rather than duplicated.
+- Test a signature mismatch, a stale timestamp, and a duplicate delivery ID.
+- Test the full `checkout.paid` payload against a disposable order database.
+- Run migration and test commands only against a disposable PostgreSQL instance — never a shared or production database.
+
+```bash
+bun run db:migrate
+bun run test
+bun run build
+```
+
+The application repository also documents a local Redis workflow and a port-`3001` browser smoke test. A public tunnel is needed to exercise the real provider-webhook path locally; there is no turnkey tunnel command in the verified source — see [testing](/docs/developers/testing).
+
+<Callout type="warning" title="No test network exists">
+Do not represent a testnet or a fake USDC token as supported. The verified catalog is Base mainnet and the native USDC contract only.
+</Callout>
+
+## Related documentation
+
+- [Testing](/docs/developers/testing) — the broader test-environment reference.
+- [Production checklist](/docs/guides/production-checklist) — what to confirm once these tests pass.

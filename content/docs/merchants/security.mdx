@@ -1,0 +1,27 @@
+---
+title: Merchant security
+description: Protect the wallet, Dashboard, and payment operations.
+audience:
+  - merchant
+content_type: how-to
+product_area: security
+api_version: v1
+status: published
+owner: merchant-success
+last_reviewed: 2026-07-15
+review_cycle_days: 45
+---
+
+- Verify the payout wallet before publishing any link.
+- Share only exact network and currency instructions: Base and USDC.
+- Keep webhook secrets and API keys out of screenshots and support tickets.
+- Require a second person to review wallet changes and live-key rotation.
+- Fulfil an order only after a verified `checkout.paid` event or a server-side paid status.
+- Retain transaction hashes and checkout references for reconciliation.
+- Never ask a customer to send additional funds to "unlock" a pending payment without an operator review.
+
+## Related documentation
+
+- [Payout wallet](/docs/merchants/payout-wallet) — the highest-impact change covered above.
+- [Team management](/docs/merchants/team-management) — who should have access to sensitive actions.
+- [Developer security](/docs/developers/security) — the equivalent guidance for API integrators.

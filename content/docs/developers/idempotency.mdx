@@ -1,0 +1,48 @@
+---
+title: Idempotency
+description: Retry checkout creation without creating duplicate checkouts.
+audience:
+  - developer
+content_type: how-to
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+`POST /api/v1/checkouts` accepts an `Idempotency-Key` header. The application stores the request method, path, a hash of the body, the response, and an expiry against that key.
+
+```http
+Idempotency-Key: order_12345_create_checkout
+```
+
+## Rules
+
+1. Generate one stable key per logical create operation, not per HTTP attempt.
+2. Reuse the same key when retrying a timeout or a transient `5xx`.
+3. Reusing the key with a **different** body returns `409 IDEMPOTENCY_KEY_REUSED`.
+4. Stored records expire after 24 hours; reusing a key after expiry returns `409 EXPIRED_IDEMPOTENCY_KEY`.
+5. Do not generate a new key automatically until you know whether the original request created a checkout.
+
+```ts
+const key = `order_${orderId}_checkout`;
+
+const response = await fetch(`${baseUrl}/api/v1/checkouts`, {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${apiKey}`,
+    "Content-Type": "application/json",
+    "Idempotency-Key": key,
+  },
+  body: JSON.stringify(payload),
+});
+```
+
+Idempotency at the API boundary does not make your own fulfilment logic idempotent. Store a unique order-transition or processed-event record in your own database — see [receive and process webhooks](/docs/guides/receive-webhooks).
+
+## Related documentation
+
+- [Errors](/docs/api-reference/errors) — the `409` conflict codes this mechanism produces.
+- [Checkout sessions](/docs/developers/checkout-sessions) — the endpoint this header applies to.

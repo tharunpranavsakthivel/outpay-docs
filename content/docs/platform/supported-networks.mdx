@@ -1,0 +1,28 @@
+---
+title: Supported networks and assets
+description: The one network and one currency verified by the current release.
+audience:
+  - developer
+  - merchant
+content_type: reference
+product_area: platform
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 90
+---
+
+| Network | Currency | Contract | Status |
+| --- | --- | --- | --- |
+| Base mainnet (chain ID `8453`) | Native USDC | `0x833589fCD6EDb6E08f4c7C32D4f71b54bdA02913` | Available in the seeded catalog |
+
+Base is an EVM network. The payment matcher compares network, token contract, recipient address, and amount before it records a match.
+
+**Not implemented:** Polygon, Ethereum mainnet, Solana, ETH, USDT, multi-chain routing, custodial balances, and a payment-router smart contract.
+
+## Related documentation
+
+- [Payment lifecycle](/docs/platform/payment-lifecycle) — how a matched transfer becomes a paid checkout.
+- [Payout wallet](/docs/merchants/payout-wallet) — the wallet that receives every matched transfer.
+- [System status](/docs/platform/system-status) — the full capability matrix for this release.

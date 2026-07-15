@@ -1,0 +1,72 @@
+---
+title: Authentication
+description: Use Outpay Dashboard sessions for the product, or scoped API keys for server integrations.
+audience:
+  - developer
+  - merchant
+content_type: reference
+product_area: security
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { TypeTable } from "fumadocs-ui/components/type-table";
+
+Outpay uses two independent authentication mechanisms: a bearer API key for the public v1 API, and a Dashboard session cookie for the Outpay Dashboard. They are not interchangeable.
+
+## Public API keys
+
+The public API uses `Authorization: Bearer <key>`. Current keys use the form `ck_<environment>_<public-prefix>_<secret>`. Legacy `outpay_<environment>_<hex>` tokens are still accepted for keys created before this format shipped.
+
+```http
+Authorization: Bearer ck_test_examplepublicprefix_secret
+```
+
+<Callout type="warning" title="Keep secret keys on your server">
+An API key is a bearer credential — anyone who has it can act as your merchant. Store it in a secret manager or a server-only environment variable. Never commit it to source control or send it to a browser.
+</Callout>
+
+Every request hashes the presented secret and compares it with a timing-safe comparison against the stored hash, so response timing cannot be used to guess whether a key prefix exists. Only an active key on an active merchant authenticates; a successful request updates the key's last-used timestamp.
+
+## Scopes
+
+| Operation | Required scope |
+| --- | --- |
+| `POST /api/v1/checkouts` | `checkouts:create` |
+| `GET /api/v1/checkouts/{id}` | `checkouts:read` or `payments:read` |
+| `GET /api/v1/payments` | `payments:read` |
+
+<Callout type="info" title="Default scopes">
+A newly created API key defaults to `checkouts:create` and `payments:read` — **not** `checkouts:read`. A key without `payments:read` cannot call `GET /api/v1/checkouts/{id}`. There is no route to edit a key's scopes after creation; issue a new key if you need a different scope set.
+</Callout>
+
+An invalid, revoked, or missing key always returns the same `401 INVALID_API_KEY` response — Outpay does not distinguish "key does not exist" from "key exists but is wrong" in the response body or its timing.
+
+## Create, rotate, and revoke
+
+The Dashboard's **Developers** page creates a named key for `test` or `live`, shows the secret exactly once at creation, and can revoke a key. A revoked key immediately stops authenticating.
+
+There is no dedicated rotation operation. To rotate a key:
+
+1. Create a new key with the scopes you need.
+2. Deploy the new key to your server environment.
+3. Confirm the new key is in use, then revoke the old key.
+
+<TypeTable type={{
+  "Authorization": { type: "string", required: true, description: "Bearer API key for a merchant-scoped public v1 request." },
+  "Idempotency-Key": { type: "string", required: false, description: "Unique request key for checkout creation; recommended for every order." }
+}} />
+
+## Dashboard sessions
+
+The Outpay Dashboard uses its own session-cookie authentication, entirely separate from API keys. Dashboard and admin routes (`/api/checkouts`, `/api/settings/*`, `/api/admin/*`, and similar) are unversioned, first-party routes — they are not the published API contract and should not be integrated against directly.
+
+## Related documentation
+
+- [API overview](/docs/api-reference/overview) — base path, headers, and response conventions.
+- [Errors](/docs/api-reference/errors) — the full authentication and authorization error catalogue.
+- [Merchant security](/docs/merchants/security) — operational guidance for key handling.

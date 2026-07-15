@@ -1,0 +1,14 @@
+/*
+ * Webfonts. Supabase's own stack: Inter (UI sans) + Source Code Pro (mono),
+ * per apps/www/styles/globals.css (--font-sans / --font-mono) and
+ * packages/config/css/theme.css. Both are open-source Google Fonts — loaded
+ * here via Google's CDN (not self-hosted binaries, since no font files ship
+ * in the extracted repo paths). Marketing surfaces at Supabase additionally
+ * layer Manrope for headings; Outpay's UI kit uses Inter throughout for a
+ * calmer, more "dashboard" feel — see readme.md Visual Foundations.
+ */
+
+:root {
+  --font-sans: 'Inter', Helvetica Neue, Helvetica, Arial, sans-serif;
+  --font-mono: 'Source Code Pro', 'Office Code Pro', Menlo, monospace;
+}

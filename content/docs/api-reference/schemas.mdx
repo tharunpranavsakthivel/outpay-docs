@@ -1,0 +1,68 @@
+---
+title: Schemas and field stability
+description: The objects exposed by the verified public v1 routes.
+audience:
+  - developer
+content_type: reference
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 30
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Checkout object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | string | Checkout reference, for example `chk_4f21a9c3b7e04d18`. |
+| `amount` | string | Decimal amount — never a floating-point number. |
+| `chain` | string | `base` in the current catalog. |
+| `currency` | string | `USDC` in the current catalog. |
+| `status` | string | `pending_payment`, `payment_detected`, `paid`, `cancelled`, or `expired`. See [payment lifecycle](/docs/platform/payment-lifecycle). |
+| `customerEmail` | string or `null` | Set only if supplied at creation. |
+| `expiresAt` | ISO 8601 timestamp | Server-enforced expiry. |
+| `successUrl` / `cancelUrl` | string (URL) or `null` | Merchant redirect targets. |
+| `paymentUrl` | string (URL) | The hosted checkout URL. |
+| `recipient.address` | string | Merchant payout wallet address. |
+| `recipient.tokenContract` | string | Base USDC contract address. |
+| `metadata` | object | Merchant-defined JSON metadata, round-tripped verbatim. |
+| `payment` | object or `null` | `null` until a transfer is detected; see the payment object below. |
+
+## Payment object
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `id` | string | Payment reference, for example `pay_9d21f7`. |
+| `checkoutId` | string | Present on `GET /api/v1/payments` list items; implicit (omitted) on the payment embedded in a checkout response. |
+| `status` | string | `pending`, `paid`, `failed`, or `expired`. |
+| `amount` | string | Observed transfer amount, as a decimal string. |
+| `currency` | string | `USDC`. |
+| `chain` | string | `base`. |
+| `txHash` | string or `null` | `null` until a transaction is matched. |
+| `fromAddress` | string | Customer's sending address; empty until a transfer is detected. |
+| `toAddress` | string | Merchant payout wallet address. |
+| `confirmedAt` | ISO 8601 timestamp or `null` | Set once confirmation requirements are met. |
+| `createdAt` | ISO 8601 timestamp | When the payment record was created. |
+
+## Network and asset
+
+| Property | Value |
+| --- | --- |
+| Network | Base mainnet, chain ID `8453` |
+| Asset | Native USDC |
+| Contract | `0x833589fCD6EDb6E08f4c7C32D4f71b54bdA02913` |
+| Decimals | `6` |
+
+<Callout type="warning" title="Beta contract">
+Field names and status values above reflect the current Beta implementation and may change before v1.0. Pin only fields you have verified against your own deployment, and watch the [changelog](/docs/changelog) for breaking changes.
+</Callout>
+
+## Related documentation
+
+- [Checkouts](/docs/api-reference/checkout-sessions) — request and response examples for every field above.
+- [Payments](/docs/api-reference/payments) — the list endpoint that returns payment objects.
+- [Payment lifecycle](/docs/platform/payment-lifecycle) — the meaning of every status value.

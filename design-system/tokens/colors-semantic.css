@@ -1,0 +1,186 @@
+/*
+ * Semantic color system — derived, not hand-picked. Extracted verbatim from
+ * Supabase's packages/ui/build/css/source/semantic.css (supabase/supabase,
+ * apache-2.0). A handful of theme inputs (--hue, --chroma, --surface,
+ * --contrast, --foreground-lightness...) drive every semantic color via
+ * OKLCH math, so light/dark/contrast all fall out of one small set of knobs
+ * rather than hundreds of hand-tuned hex values.
+ *
+ * :root below carries the same default inputs as Supabase's dark theme (the
+ * app's default appearance there). theme-light.css / theme-dark.css override
+ * the inputs per data-theme; put data-theme="light" (default for Outpay,
+ * fintech-conventional) or data-theme="dark" on <html>/<body>.
+ *
+ * Use the OUTPUT tokens (--background, --foreground, --card, --border,
+ * --primary, --destructive, --warning, --info...) in UI work. The inputs are
+ * theme plumbing, not something a component should reference directly.
+ */
+
+:root {
+  --hue: 159; /* @kind other */
+  --surface-hue: var(--hue); /* @kind other */
+  --primary-hue: var(--hue); /* @kind other */
+  --chroma: 0.016; /* @kind other */
+  --surface: 0.17; /* @kind other */
+
+  --foreground-lightness: 0.95; /* @kind other */
+  --muted-foreground-level: 0.8; /* @kind other */
+  --tertiary-foreground-level: 0.65; /* @kind other */
+
+  --contrast: 0.5; /* @kind other */
+  --contrast-delta: calc((var(--contrast) - 0.5) / 0.5); /* @kind other */
+  --contrast-up: max(0, var(--contrast-delta)); /* @kind other */
+  --contrast-down: max(0, calc(var(--contrast-delta) * -1)); /* @kind other */
+  --contrast-text-floor: 0.9; /* @kind other */
+  --contrast-border-floor: 0.05; /* @kind other */
+  --contrast-text: calc(1 - (1 - var(--contrast-text-floor)) * var(--contrast-down)); /* @kind other */
+  --contrast-border-linear: calc(
+    var(--contrast-border-floor) + (1 - var(--contrast-border-floor)) * var(--contrast)
+  ); /* @kind other */
+  --contrast-border: calc(var(--contrast-border-linear) * var(--contrast-border-linear)); /* @kind other */
+
+  --elevation-1: 1; /* @kind other */
+  --elevation-2: 1.5; /* @kind other */
+  --elevation-3: 2; /* @kind other */
+  --elevation-4: 3; /* @kind other */
+  --tone-span: calc(var(--foreground-lightness) - var(--surface)); /* @kind other */
+  --elevation-step: calc(var(--tone-span) * 0.04); /* @kind other */
+  --surface-overlay-unit: calc(var(--elevation-step) / abs(var(--tone-span))); /* @kind other */
+  --muted-alpha: calc(var(--surface-overlay-unit) * var(--elevation-1)); /* @kind other */
+  --accent-alpha: calc(var(--surface-overlay-unit) * var(--elevation-2)); /* @kind other */
+  --tertiary-alpha: calc(var(--surface-overlay-unit) * var(--elevation-3)); /* @kind other */
+
+  --brand-hue-reference: 159; /* @kind other */
+  --status-hue-pull: 0.15; /* @kind other */
+  --warning-hue: clamp(
+    65,
+    calc(75 + (var(--primary-hue) - var(--brand-hue-reference)) * var(--status-hue-pull)),
+    95
+  ); /* @kind other */
+  --destructive-hue: clamp(
+    12,
+    calc(25 + (var(--primary-hue) - var(--brand-hue-reference)) * var(--status-hue-pull)),
+    42
+  ); /* @kind other */
+  --info-hue: clamp(
+    272,
+    calc(288 + (var(--primary-hue) - var(--brand-hue-reference)) * var(--status-hue-pull)),
+    302
+  ); /* @kind other */
+  --expressive-chroma: 0.14; /* @kind other */
+  --warning-lightness: 0.8; /* @kind other */
+  --destructive-lightness: 0.75; /* @kind other */
+  --info-lightness: 0.7; /* @kind other */
+
+  --background: oklch(var(--surface) calc(var(--chroma) * 0.5) var(--surface-hue));
+  --foreground: oklch(
+    calc(var(--surface) + var(--tone-span) * var(--contrast-text)) calc(var(--chroma) * 0.55)
+      var(--surface-hue)
+  );
+
+  --card: oklch(from var(--background) calc(l + var(--elevation-step) * var(--elevation-1)) c h);
+  --card-foreground: var(--foreground);
+  --popover: oklch(from var(--background) calc(l + var(--elevation-step) * var(--elevation-2)) c h);
+  --popover-foreground: var(--foreground);
+
+  --primary: oklch(0.76 0.15 var(--primary-hue));
+  --primary-foreground: oklch(
+    min(var(--surface), var(--foreground-lightness)) calc(var(--chroma) * 0.45) var(--primary-hue)
+  );
+
+  --secondary: oklch(
+    from var(--background) calc(l + var(--elevation-step) * var(--elevation-3)) c h
+  );
+  --secondary-foreground: var(--foreground);
+  --tertiary: oklch(from var(--foreground) l c h / var(--tertiary-alpha));
+  --tertiary-foreground-mix: calc(
+    var(--tertiary-foreground-level) + (1 - var(--tertiary-foreground-level)) * var(--contrast-up) -
+      var(--tertiary-foreground-level) * 0.5 * var(--contrast-down)
+  ); /* @kind other */
+  --tertiary-foreground: oklch(
+    from var(--foreground) calc(var(--surface) + var(--tone-span) * var(--tertiary-foreground-mix))
+      c h
+  );
+  --muted: oklch(from var(--foreground) l c h / var(--muted-alpha));
+  --muted-foreground-mix: calc(
+    var(--muted-foreground-level) + (1 - var(--muted-foreground-level)) * var(--contrast-up) -
+      var(--muted-foreground-level) * 0.5 * var(--contrast-down)
+  ); /* @kind other */
+  --muted-foreground: oklch(
+    from var(--foreground) calc(var(--surface) + var(--tone-span) * var(--muted-foreground-mix)) c h
+  );
+  --accent: oklch(from var(--foreground) l c h / var(--accent-alpha));
+  --accent-foreground: var(--foreground);
+
+  --warning: oklch(var(--warning-lightness) var(--expressive-chroma) var(--warning-hue));
+  --destructive: oklch(
+    var(--destructive-lightness) var(--expressive-chroma) var(--destructive-hue)
+  );
+  --warning-foreground: oklch(
+    from var(--warning) clamp(0.12, calc((0.62 - l) * 100), 0.99) calc(c * 0.08) h
+  );
+  --destructive-foreground: oklch(
+    from var(--destructive) clamp(0.12, calc((0.62 - l) * 100), 0.99) calc(c * 0.08) h
+  );
+  --info: oklch(var(--info-lightness) var(--expressive-chroma) var(--info-hue));
+  --info-foreground: oklch(
+    from var(--info) clamp(0.12, calc((0.62 - l) * 100), 0.99) calc(c * 0.08) h
+  );
+
+  --border-destructive: oklch(from var(--destructive) l c h / 30%);
+  --border-warning: oklch(from var(--warning) l c h / 30%);
+  --border-info: oklch(from var(--info) l c h / 30%);
+  --border-brand: oklch(from var(--primary) l c h / 30%);
+
+  --border: oklch(
+    from var(--foreground) l calc(c * 0.54) h / calc(2% + 20% * var(--contrast-border))
+  );
+  --input: oklch(
+    from var(--foreground) l calc(c * 0.5) h / calc(3% + 38% * var(--contrast-border))
+  );
+  --ring: oklch(from var(--primary) l c h / 55%);
+}
+
+/* Legacy/back-compat aliases (Supabase compat.css) — components below reference
+   these names; keep them so copy-pasted class names keep resolving. */
+:root {
+  --foreground-default: var(--foreground);
+  --foreground-light: var(--muted-foreground);
+  --foreground-lighter: var(--tertiary-foreground);
+  --foreground-muted: var(--tertiary-foreground);
+  --foreground-contrast: var(--primary-foreground);
+
+  --background-default: var(--background);
+  --background-200: var(--card);
+  --background-alternative-default: var(--background);
+  --background-alternative-200: var(--card);
+  --background-selection: var(--accent);
+  --background-control: var(--accent);
+  --background-surface-75: var(--card);
+  --background-surface-100: var(--card);
+  --background-surface-200: var(--muted);
+  --background-surface-300: var(--secondary);
+  --background-surface-400: var(--tertiary);
+  --background-overlay-default: var(--secondary);
+  --background-overlay-hover: var(--accent);
+  --background-muted: var(--muted);
+  --background-button-default: var(--secondary);
+  --background-dialog-default: var(--popover);
+  --background-dash-sidebar: var(--background);
+  --background-dash-canvas: var(--background);
+
+  --border-default: var(--border);
+  --border-muted: var(--border);
+  --border-secondary: var(--border-muted);
+  --border-overlay: oklch(
+    from var(--foreground) l calc(c * 0.5) h / calc(4% + 34% * var(--contrast-border))
+  );
+  --border-control: var(--input);
+  --border-alternative: var(--border);
+  --border-strong: var(--input);
+  --border-stronger: oklch(
+    from var(--foreground) l calc(c * 0.5) h / calc(5% + 45% * var(--contrast-border))
+  );
+  --border-button-default: var(--border);
+  --border-button-hover: var(--border-stronger);
+}

@@ -1,0 +1,19 @@
+<!-- @dsCard group="Colors" viewport="700x150" name="Status — Warning / Destructive / Info" subtitle="Derived, fixed-identity expressive colors" -->
+<!DOCTYPE html>
+<html data-theme="light">
+<head>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:16px;background:var(--background-default);font-family:var(--font-sans);}
+  .row{display:flex;gap:10px;}
+  .sw{flex:1;height:72px;border-radius:8px;border:1px solid;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;}
+</style>
+</head>
+<body>
+  <div class="row">
+    <div class="sw" style="background:color-mix(in oklch, var(--warning) 12%, var(--background)); color:var(--warning); border-color:var(--border-warning)">Warning</div>
+    <div class="sw" style="background:color-mix(in oklch, var(--destructive) 12%, var(--background)); color:var(--destructive); border-color:var(--border-destructive)">Destructive</div>
+    <div class="sw" style="background:color-mix(in oklch, var(--info) 12%, var(--background)); color:var(--info); border-color:var(--border-info)">Info</div>
+  </div>
+</body>
+</html>

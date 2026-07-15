@@ -1,0 +1,63 @@
+---
+title: Payment links
+description: Create a hosted checkout link from the merchant Dashboard.
+audience:
+  - merchant
+content_type: how-to
+product_area: checkout
+api_version: v1
+status: published
+owner: merchant-success
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Who this is for
+
+Merchant owners and team members who want to accept a USDC payment without writing any integration code.
+
+## Before you begin
+
+- An active store with a verified payout wallet.
+- The exact amount you want to charge.
+
+<Callout type="info" title="A payment link is a checkout URL">
+Outpay does not have a separate, reusable "payment link" object — each checkout you create has its own hosted checkout URL, and that URL **is** the shareable payment link. Create a new checkout for each new payment request.
+</Callout>
+
+## Create the link
+
+<Steps>
+<Step>Open **Checkouts** in the Dashboard.</Step>
+<Step>Select **Create checkout**.</Step>
+<Step>Enter the amount and a checkout label. Add an order reference or redirect URL if needed.</Step>
+<Step>Review the Base and USDC payment instructions.</Step>
+<Step>Create the checkout and copy the generated link.</Step>
+<Step>Share the link with the customer. Keep the link associated with one order in your own system.</Step>
+</Steps>
+
+<Callout type="info" title="Suggested screenshot">
+Suggested screenshot: the checkout-creation form showing amount, label, order reference, and redirect URL. No screenshot asset exists in this repository — do not imply a pixel-perfect UI capture without one.
+</Callout>
+
+## Expected result
+
+Outpay displays a hosted checkout URL. Sharing it lets the customer open Outpay Checkout, see the Base/USDC payment instructions, and pay directly to your payout wallet.
+
+## Common problems
+
+| Problem | Likely cause | Next step |
+| --- | --- | --- |
+| **Create checkout** button is unavailable | The store has no active payout wallet yet. | Complete [onboarding](/docs/merchants/onboarding) or verify a wallet in Settings. |
+| Customer says the link does not work | The checkout has expired, or was already paid or deactivated. | Check its status on the Checkouts page and create a new one if needed. |
+
+The Dashboard flow uses the application's first-party, authenticated checkout-creation route. It is unversioned; use the [public API](/docs/api-reference/checkout-sessions) for a third-party server integration instead.
+
+## Related documentation
+
+- [Payout wallet](/docs/merchants/payout-wallet) — the wallet every payment link pays into.
+- [Transactions](/docs/merchants/transactions) — track whether a shared link was paid.
+- [Quickstart](/docs/getting-started/quickstart) — create the same kind of checkout from the API.

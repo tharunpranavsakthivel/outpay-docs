@@ -1,0 +1,39 @@
+[data-theme='dark'] {
+  --hue: 159; /* @kind other */
+  --chroma: 0.005; /* @kind other */
+  --surface: 0.19; /* @kind other */
+  --elevation-step: 0.025; /* @kind other */
+  --contrast: 0.5; /* @kind other */
+  --foreground-lightness: 0.95; /* @kind other */
+  --muted-foreground-level: 0.8; /* @kind other */
+  --tertiary-foreground-level: 0.65; /* @kind other */
+
+  --code-block-5: 13.8deg 89.7% 69.6%; /* @kind color */
+  --code-block-4: 276.1deg 67.7% 74.5%; /* @kind color */
+  --code-block-3: 83.8deg 61.7% 63.1%; /* @kind color */
+  --code-block-2: 33.2deg 90.3% 75.7%; /* @kind color */
+  --code-block-1: 170.8deg 43.1% 61.4%; /* @kind color */
+
+  --secondary-default: 247.8deg 100% 70%; /* @kind color */
+  --secondary-400: 248.3deg 54.5% 25.9%; /* @kind color */
+  --secondary-200: 248deg 53.6% 11%; /* @kind color */
+  --brand-link: 155deg 100% 38.6%; /* @kind color */
+  --brand-default: 153.1deg 60.2% 52.7%; /* @kind color */
+  --brand-600: 154.9deg 59.5% 70%; /* @kind color */
+  --brand-500: 154.9deg 100% 19.2%; /* @kind color */
+  --brand-400: 155.5deg 100% 9.6%; /* @kind color */
+  --brand-300: 155.1deg 100% 8%; /* @kind color */
+  --brand-200: 162deg 100% 2%; /* @kind color */
+  --warning-default: 38.9deg 100% 42.9%; /* @kind color */
+  --warning-600: 38.9deg 100% 42.9%; /* @kind color */
+  --warning-500: 34.8deg 90.9% 21.6%; /* @kind color */
+  --warning-400: 33.2deg 100% 14.5%; /* @kind color */
+  --warning-300: 32.3deg 100% 10.2%; /* @kind color */
+  --warning-200: 36.6deg 100% 8%; /* @kind color */
+  --destructive-default: 10.2deg 77.9% 53.9%; /* @kind color */
+  --destructive-600: 9.7deg 85.2% 62.9%; /* @kind color */
+  --destructive-500: 7.9deg 71.6% 29%; /* @kind color */
+  --destructive-400: 6.7deg 60% 20.6%; /* @kind color */
+  --destructive-300: 7.5deg 51.3% 15.3%; /* @kind color */
+  --destructive-200: 10.9deg 23.4% 9.2%; /* @kind color */
+}

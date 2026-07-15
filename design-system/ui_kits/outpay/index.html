@@ -1,0 +1,91 @@
+<!-- @dsCard group="Outpay" viewport="1280x800" name="Outpay — Product UI Kit" subtitle="Landing, merchant dashboard, checkout creation, customer checkout, payments, developer/API, store directory, settings" -->
+<!DOCTYPE html>
+<html data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>Outpay — UI Kit</title>
+<link rel="stylesheet" href="../../styles.css">
+<script src="../../_ds_bundle.js"></script>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .kit-switcher {
+    position: fixed; top: 12px; right: 12px; z-index: 100;
+    display: flex; gap: 4px; background: var(--popover); border: 1px solid var(--border-default);
+    border-radius: 8px; padding: 4px; box-shadow: var(--shadow-md); flex-wrap: wrap; max-width: 480px;
+  }
+  .kit-switcher button {
+    border: none; background: transparent; font-family: var(--font-sans); font-size: 11px;
+    padding: 5px 8px; border-radius: 5px; cursor: pointer; color: var(--foreground-light);
+  }
+  .kit-switcher button.active { background: var(--background-selection); color: var(--foreground-default); font-weight: 500; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" src="Icon.jsx"></script>
+<script type="text/babel" src="Shell.jsx"></script>
+<script type="text/babel" src="Landing.jsx"></script>
+<script type="text/babel" src="Dashboard.jsx"></script>
+<script type="text/babel" src="CreateCheckout.jsx"></script>
+<script type="text/babel" src="CustomerCheckout.jsx"></script>
+<script type="text/babel" src="Payments.jsx"></script>
+<script type="text/babel" src="Developer.jsx"></script>
+<script type="text/babel" src="StoreDirectory.jsx"></script>
+<script type="text/babel" src="Settings.jsx"></script>
+
+<script type="text/babel">
+function App() {
+  const [screen, setScreen] = React.useState('landing');
+
+  const SCREENS = [
+    { id: 'landing', label: 'Landing' },
+    { id: 'dashboard', label: 'Dashboard' },
+    { id: 'checkouts', label: 'Create checkout' },
+    { id: 'checkout', label: 'Customer checkout' },
+    { id: 'payments', label: 'Payments' },
+    { id: 'developer', label: 'Developer / API' },
+    { id: 'directory', label: 'Store directory' },
+    { id: 'settings', label: 'Settings' },
+  ];
+
+  const merchantScreens = ['dashboard', 'checkouts', 'payments', 'developer', 'settings'];
+
+  let content;
+  if (screen === 'landing') {
+    content = <window.Landing onGetStarted={() => setScreen('dashboard')} onViewDirectory={() => setScreen('directory')} />;
+  } else if (screen === 'checkout') {
+    content = <window.CustomerCheckout onBack={() => setScreen('checkouts')} />;
+  } else if (screen === 'directory') {
+    content = <window.StoreDirectory />;
+  } else if (merchantScreens.includes(screen)) {
+    content = (
+      <window.DashboardShell active={screen} onNavigate={setScreen}>
+        {screen === 'dashboard' && <window.Dashboard onNavigate={setScreen} />}
+        {screen === 'checkouts' && <window.CreateCheckout onGenerate={() => setScreen('checkout')} />}
+        {screen === 'payments' && <window.Payments />}
+        {screen === 'developer' && <window.Developer />}
+        {screen === 'settings' && <window.Settings />}
+      </window.DashboardShell>
+    );
+  }
+
+  return (
+    <React.Fragment>
+      <div className="kit-switcher">
+        {SCREENS.map((s) => (
+          <button key={s.id} className={screen === s.id ? 'active' : ''} onClick={() => setScreen(s.id)}>{s.label}</button>
+        ))}
+      </div>
+      {content}
+    </React.Fragment>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

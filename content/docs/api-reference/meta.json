@@ -1,0 +1,13 @@
+{
+  "title": "API reference",
+  "pages": [
+    "index",
+    "overview",
+    "authentication",
+    "checkout-sessions",
+    "payments",
+    "errors",
+    "schemas"
+  ],
+  "defaultOpen": false
+}

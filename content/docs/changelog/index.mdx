@@ -1,0 +1,70 @@
+---
+title: Changelog
+description: Product, API, infrastructure, security, and documentation changes across Outpay releases.
+audience:
+  - developer
+  - merchant
+  - support
+content_type: reference
+product_area: changelog
+api_version: v1
+status: published
+owner: documentation
+last_reviewed: 2026-07-15
+review_cycle_days: 30
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+Outpay is currently in **v0.1 Beta**. The changelog records meaningful changes to the product, the public API, Outpay Checkout, blockchain payment processing, the database schema, deployment configuration, security controls, and developer tooling.
+
+<Callout type="warning" title="Beta compatibility">
+Beta releases do not guarantee backward compatibility. Review this changelog before updating a deployed Outpay instance, or a merchant integration built against `/api/v1/*` or the merchant-webhook payload.
+</Callout>
+
+## Releases
+
+| Version | Channel | Release date | Status |
+| --- | --- | --- | --- |
+| [v0.1 Beta](/docs/changelog/v0.1-beta) | Beta | Not verified | Current |
+
+No git tag or GitHub release exists for this repository at the time of writing, so no release date can be independently verified for v0.1 Beta.
+
+## Upcoming changes
+
+Changes not yet included in a published version are recorded in [Unreleased](/docs/changelog/unreleased).
+
+## Categories
+
+Each versioned release page uses: Release summary, Who is affected, Action required, Added, Changed, Improved, Fixed, Deprecated, Removed, Security, Known limitations, Breaking-change risk, and Upgrade guidance.
+
+## Versioning policy
+
+```text
+Patch: Backward-compatible bug fixes
+Minor: Backward-compatible functionality
+Major: Breaking stable-interface changes
+Pre-release: Beta or release-candidate versions before stable v1.0
+```
+
+Outpay has not yet adopted a stricter compatibility policy than this. Until v1.0, **any** release — including a patch-labelled one — may contain a breaking change to an API route, JSON field name, webhook payload, environment variable, or database migration. Do not assume semantic versioning's usual patch/minor guarantees apply below v1.0.
+
+## Changelog maintenance policy
+
+New changes are added to [Unreleased](/docs/changelog/unreleased) first, under the category that best describes them. Before publishing a new release:
+
+1. Move the relevant Unreleased entries into a new versioned page.
+2. Add the version number and, if known, the release date — record "Not verified" rather than guessing.
+3. Verify the described functionality actually works as stated.
+4. Add migration instructions for any new or changed database migration.
+5. Add environment-variable changes (new, removed, or renamed).
+6. Add API compatibility notes — breaking or additive.
+7. Add webhook compatibility notes — new event types, or payload changes.
+8. Update the release-history table above.
+9. Reset the Unreleased categories to empty.
+10. Create, or verify, a corresponding Git tag for the release.
+
+## Related documentation
+
+- [v0.1 Beta](/docs/changelog/v0.1-beta) — the current release in full.
+- [System status](/docs/platform/system-status) — the live capability matrix this changelog feeds.

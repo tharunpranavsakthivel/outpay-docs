@@ -1,0 +1,53 @@
+---
+title: Events
+description: The event type and payload currently emitted by Outpay.
+audience:
+  - developer
+content_type: reference
+product_area: webhooks
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 30
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## `checkout.paid`
+
+Sent after the payment matcher marks a matching on-chain transfer as confirmed. It is persisted as a unique webhook event for the checkout/payment pair before delivery, so Outpay never dispatches more than one `checkout.paid` event per checkout.
+
+```json
+{
+  "amount": "49.99",
+  "checkout_ref": "chk_4f21a9c3b7e04d18",
+  "confirmed_at": "2026-07-15T11:45:00.000Z",
+  "currency": "USDC",
+  "event": "checkout.paid",
+  "tx_hash": "0xabc123..."
+}
+```
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `event` | string | Always `checkout.paid` in the current worker. |
+| `checkout_ref` | string | The checkout reference returned by the create-checkout API call. |
+| `amount` | string | Matched token amount. |
+| `currency` | string | Token symbol, currently always `USDC`. |
+| `confirmed_at` | ISO 8601 timestamp | When Outpay marked the payment confirmed. |
+| `tx_hash` | string or `null` | On-chain transaction hash, when available. |
+
+<Callout type="info" title="Payload shape is beta">
+A richer, nested envelope has been discussed for a future release, but the current worker persists and delivers only the flat shape above. Build against the payload your deployment actually sends, and watch the [changelog](/docs/changelog) for a future versioned change.
+</Callout>
+
+## Planned event types
+
+No other event type is dispatched today. Do not build merchant-side logic that waits for a `checkout.expired`, `checkout.underpaid`, `payment.confirmed`, or similar event — poll [`GET /api/v1/checkouts/{id}`](/docs/api-reference/checkout-sessions) for any state other than `paid`.
+
+## Related documentation
+
+- [Verify webhook signatures](/docs/webhooks/verification) — confirm this payload actually came from Outpay.
+- [Receive and process webhooks](/docs/guides/receive-webhooks) — a full handler pattern.
+- [Payment lifecycle](/docs/platform/payment-lifecycle) — every status this event does not cover.

@@ -1,0 +1,58 @@
+---
+title: Merchant onboarding
+description: Create a store and register the wallet that receives payments.
+audience:
+  - merchant
+content_type: tutorial
+product_area: dashboard
+api_version: v1
+status: published
+owner: merchant-success
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Who this is for
+
+Anyone creating a new Outpay merchant account for the first time.
+
+## Before you begin
+
+- Your store's name and, optionally, a short description.
+- An EVM wallet you control on Base, and the ability to sign a message with it (either a browser wallet extension, or a manually pasted signature).
+
+## Create your store
+
+<Steps>
+<Step>Open the Outpay Dashboard and create your account.</Step>
+<Step>Enter the store name and optional description.</Step>
+<Step>Enter the EVM wallet address you control for Base payments.</Step>
+<Step>Sign the wallet-ownership challenge. Outpay validates the address format, its checksum, the signature, and the timestamp before accepting it.</Step>
+<Step>Review the store details and finish onboarding.</Step>
+</Steps>
+
+<Callout type="error" title="Verify before accepting payments">
+Confirm the wallet address character-by-character against your treasury records. Customers send funds directly to this address — a wrong wallet is not something Outpay can delay or reverse.
+</Callout>
+
+## Expected result
+
+Your store is created, and your payout wallet is registered and verified. You can now create checkouts and payment links from the Dashboard.
+
+## Common problems
+
+| Problem | Likely cause | Next step |
+| --- | --- | --- |
+| Wallet signature is rejected | The signature was signed more than a few minutes after the challenge was issued, or with the wrong wallet. | Regenerate the challenge and sign it promptly with the exact wallet you entered. |
+| Onboarding cannot be completed | Required store or wallet fields are missing or invalid. | Confirm the wallet address matches the required format and try again. |
+
+You can update the payout wallet later from **Settings**. That path requires a fresh ownership signature and should be treated as a high-impact access event — see [payout wallet](/docs/merchants/payout-wallet).
+
+## Related documentation
+
+- [Payout wallet](/docs/merchants/payout-wallet) — change your registered wallet later.
+- [Dashboard overview](/docs/merchants/dashboard) — what to do next after onboarding.
+- [Merchant security](/docs/merchants/security) — protecting wallet changes and key access.

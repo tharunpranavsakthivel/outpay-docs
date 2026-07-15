@@ -1,0 +1,14 @@
+{
+  "title": "Developers",
+  "pages": [
+    "index",
+    "checkout-sessions",
+    "payments",
+    "errors",
+    "idempotency",
+    "examples",
+    "testing",
+    "security"
+  ],
+  "defaultOpen": true
+}

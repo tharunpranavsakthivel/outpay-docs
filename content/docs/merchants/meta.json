@@ -1,0 +1,15 @@
+{
+  "title": "Merchants",
+  "pages": [
+    "index",
+    "onboarding",
+    "dashboard",
+    "payment-links",
+    "transactions",
+    "payout-wallet",
+    "team-management",
+    "security",
+    "troubleshooting"
+  ],
+  "defaultOpen": false
+}

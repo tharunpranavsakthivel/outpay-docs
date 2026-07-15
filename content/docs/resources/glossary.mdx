@@ -1,0 +1,44 @@
+---
+title: Glossary
+description: Outpay terms in plain language.
+audience:
+  - developer
+  - merchant
+  - support
+content_type: reference
+product_area: overview
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 180
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+| Term | Definition |
+| --- | --- |
+| Base | The Ethereum layer-2 network used by the current payment matcher. |
+| Checkout | A payment request and its hosted customer-facing flow. Also called a checkout session internally. |
+| Checkout reference | The opaque identifier (`chk_...`) returned when a checkout is created. |
+| Confirmation | Additional block depth confirmed after a transfer is included on-chain. |
+| Currency | The token being transferred; v0.1 uses USDC exclusively. |
+| Finality | Confidence that a transaction will not be reorganized off the canonical chain. Outpay's automated reorg handling is not verified. |
+| Idempotency key | A merchant-generated key that lets checkout creation safely replay its original response instead of creating a duplicate. |
+| Live mode | The API-key environment used for real, production-style merchant configuration. |
+| Merchant webhook | A signed, outbound event delivered from Outpay to the merchant's server. |
+| Non-custodial | Outpay does not hold funds; settlement is direct to the merchant's own wallet. |
+| Overpayment | A transfer above the requested amount; a small tolerance is accepted, but remediation for a large overpayment is a beta concern — see [payment lifecycle](/docs/platform/payment-lifecycle). |
+| Payout wallet | The merchant-controlled address that receives every payment directly. |
+| Test mode | The API-key environment intended for controlled integration testing. Not a separate blockchain sandbox. |
+| Transaction hash | The blockchain identifier for a specific transfer. |
+| Underpayment | A transfer below the requested amount. |
+
+<Callout type="info" title="One canonical term per concept">
+This glossary uses one preferred term per concept throughout the documentation — for example, "payout wallet," not "withdrawal address" or "settlement wallet." If you see a synonym elsewhere, treat it as referring to the same thing defined here.
+</Callout>
+
+## Related documentation
+
+- [Core concepts](/docs/getting-started/concepts) — the subset of these terms most relevant to a first integration.
+- [FAQ](/docs/resources/faq) — short answers using this same terminology.

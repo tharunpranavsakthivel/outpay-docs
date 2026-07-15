@@ -1,0 +1,45 @@
+---
+title: Developer documentation
+description: Build against the verified API, hosted checkout, and signed webhook flow.
+audience:
+  - developer
+content_type: explanation
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Who this is for
+
+This section is for developers building a server-side integration against the Outpay public v1 API. If you only need a shareable payment link with no code, see the [merchant guide](/docs/merchants) instead.
+
+<Cards>
+  <Card href="/docs/developers/checkout-sessions" title="Checkouts" description="Create, redirect, read, expire, and reconcile a hosted checkout." />
+  <Card href="/docs/webhooks/verification" title="Webhook verification" description="Verify the raw request body before fulfilling an order." />
+  <Card href="/docs/developers/idempotency" title="Idempotency" description="Retry checkout creation without creating duplicate payment requests." />
+  <Card href="/docs/guides/production-checklist" title="Production checklist" description="Review the controls required before a real integration goes live." />
+</Cards>
+
+## The recommended lifecycle
+
+1. Create an API key with only the scopes your server needs.
+2. Create one checkout per merchant order, with a stable idempotency key derived from your order ID.
+3. Redirect the customer to the returned `paymentUrl`.
+4. Verify the signed `checkout.paid` webhook on your server and fulfil the order exactly once.
+5. Poll the checkout or list payments for reconciliation and support tooling — never as your primary fulfilment signal.
+
+<Callout type="warning" title="Do not trust the redirect">
+Success and cancellation URLs are customer navigation events, not payment proof. A customer can close the tab, or an attacker can guess the success URL. Fulfil only from a verified webhook or a server-side status read.
+</Callout>
+
+## Related documentation
+
+- [API reference](/docs/api-reference/overview) — the strict endpoint contract.
+- [Webhooks](/docs/webhooks) — event types, signing, and delivery behaviour.
+- [Testing](/docs/developers/testing) — validate your integration before going live.

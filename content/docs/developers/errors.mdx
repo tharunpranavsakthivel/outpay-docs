@@ -1,0 +1,50 @@
+---
+title: Handle errors
+description: Handle authentication, validation, conflict, rate-limit, and server failures.
+audience:
+  - developer
+content_type: how-to
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+The versioned API uses this error envelope on every failure:
+
+```json
+{
+  "error": {
+    "code": "VALIDATION_FAILED",
+    "message": "Request body is invalid.",
+    "details": [{ "field": "amount", "issue": "Must be positive." }],
+    "request_id": "req_01JZ8T6M3J08HKF5Y98S9E2N8N"
+  }
+}
+```
+
+| HTTP | Code | Meaning | Retry? |
+| --- | --- | --- | --- |
+| 400 | `VALIDATION_FAILED` | The JSON, path, or query does not satisfy the route's schema. | No — correct the request first. |
+| 401 | `INVALID_API_KEY` | Missing, malformed, revoked, or mismatched key. | No — rotate or reconfigure the credential. |
+| 403 | `FORBIDDEN` | The key lacks the operation's required scope. | No — use a correctly scoped key. |
+| 404 | `CHECKOUT_NOT_FOUND` | The checkout does not exist within the authenticated merchant's scope. | No — verify the identifier. |
+| 409 | `IDEMPOTENCY_KEY_REUSED` | The same key was sent with a different request body. | No — investigate, and use a new key only for a genuinely new request. |
+| 409 | `EXPIRED_IDEMPOTENCY_KEY` | The stored replay record is past its 24-hour expiry. | Only after deciding whether a new checkout is still appropriate. |
+| 409 | `MERCHANT_NOT_ACTIVE` | The merchant account cannot create new checkouts. | No, until the merchant is reactivated. |
+| 429 | rate-limit error | The merchant or route exceeded its configured limit. | Yes, after the `Retry-After` delay. |
+| 500 | `CHECKOUT_CREATE_FAILED`, or a read/list failure code | Unexpected server-side failure. | For a create request, retry only with the same idempotency key. |
+
+<Callout type="info" title="Keep request IDs">
+Log `request_id` alongside your order ID and checkout ID. It is the shortest path to support and incident correlation.
+</Callout>
+
+## Related documentation
+
+- [Errors](/docs/api-reference/errors) — the full, code-authoritative error catalogue.
+- [Idempotency](/docs/developers/idempotency) — the mechanics behind the `409` conflict codes.
+- [Support](/docs/resources/support) — what to include when you escalate an error.

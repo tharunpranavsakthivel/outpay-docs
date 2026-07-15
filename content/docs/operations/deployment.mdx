@@ -1,0 +1,38 @@
+---
+title: Deployment
+description: Operational boundaries for the Outpay application.
+audience:
+  - internal
+content_type: how-to
+product_area: operations
+api_version: v1
+status: published
+owner: platform-engineering
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Before you begin
+
+The application is a Next.js app with Bun-based background workers, PostgreSQL, Redis, Alchemy/Chainstack provider routing, and Railway configuration files. A deployed payment pipeline needs the web service and the payment, reconciliation, and webhook workers to share the same database and queue.
+
+## Release steps
+
+1. Run migrations and validate the schema.
+2. Confirm every worker service is deployed with its required environment variables.
+3. Verify the provider webhook signing key and the merchant-webhook encryption configuration.
+4. Confirm private Redis networking and database connection ceilings.
+5. Run the test suite and `bun run build`.
+6. Exercise checkout creation, detection, webhook delivery, and failure recovery in a controlled environment before opening the release to real merchants.
+
+<Callout type="error" title="Database backup and restore is unverified">
+Database backup and restore is explicitly recorded as unverified in the deployment record. Treat a completed, tested restore as a release blocker before this deployment handles real customer funds.
+</Callout>
+
+## Related documentation
+
+- [Environment variables](/docs/operations/environment-variables) — every variable referenced above.
+- [Operational troubleshooting](/docs/operations/troubleshooting) — diagnosing a failed deployment step.
+- [Production checklist](/docs/guides/production-checklist) — the integration-level counterpart to this checklist.

@@ -1,0 +1,53 @@
+---
+title: API overview
+description: Base URL, headers, authentication, and the scope of the public route surface.
+audience:
+  - developer
+content_type: reference
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 30
+---
+
+The public API is the versioned route group below. Replace the origin with the host where your Outpay instance is deployed — see [environments](/docs/getting-started/environments).
+
+```text
+https://your-outpay-host.example/api/v1
+```
+
+| Method | Path | Required scope | Purpose |
+| --- | --- | --- | --- |
+| `POST` | `/checkouts` | `checkouts:create` | Create a hosted checkout. |
+| `GET` | `/checkouts/{id}` | `checkouts:read` or `payments:read` | Read a merchant-owned checkout. |
+| `GET` | `/payments` | `payments:read` | List merchant payments. |
+
+## Common headers
+
+```http
+Authorization: Bearer ck_test_...
+Content-Type: application/json
+Idempotency-Key: order_12345_checkout
+```
+
+`Idempotency-Key` is only meaningful on checkout creation. The route parses and stores it only when the header is present.
+
+## JSON conventions
+
+Request and response bodies use `camelCase` field names (for example `successUrl`, `customerEmail`, `paymentUrl`) — this differs from the `snake_case` convention used in the `checkout.paid` webhook payload (`checkout_ref`, `confirmed_at`, `tx_hash`). Both are real, verified conventions; do not assume one casing style everywhere in the product. Decimal amounts (`amount`) are always strings, never floating-point JSON numbers, so token precision is never lost during parsing.
+
+## Response conventions
+
+Successful reads return the resource as a JSON object. Creation returns `201`. Every error response includes a request ID in the public error envelope — see [errors](/docs/api-reference/errors). Rate-limited responses should only be retried after the delay indicated by the response.
+
+## Deliberately excluded
+
+`/api/checkouts`, `/api/payments`, `/api/settings/*`, `/api/developers/*`, `/api/dashboard/*`, `/api/onboarding`, `/api/admin/*`, and `/api/internal/*` are first-party Dashboard, internal-provider, or admin surfaces. They may change independently of this contract and are not part of the published v1 API — do not integrate a third-party client against them.
+
+## Related documentation
+
+- [Authentication](/docs/api-reference/authentication) — bearer key requirements for every route above.
+- [Checkouts](/docs/api-reference/checkout-sessions) — full request and response reference.
+- [Errors](/docs/api-reference/errors) — the complete error catalogue.

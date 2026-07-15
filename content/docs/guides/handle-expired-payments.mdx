@@ -1,0 +1,42 @@
+---
+title: Handle an expired checkout
+description: Recover safely when a customer pays after the checkout window.
+audience:
+  - developer
+  - merchant
+content_type: how-to
+product_area: payments
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Who this is for
+
+Developers and merchants investigating a payment that arrived after a checkout's expiry window closed.
+
+## Steps
+
+1. Read the checkout's status from your server or the Dashboard.
+2. If the checkout is `expired`, do not ask the customer to resend to the old recipient without an operator decision.
+3. Capture the transaction hash, amount, token contract, network, and recipient address.
+4. Create a new checkout for a new order attempt, if the merchant elects to continue.
+5. Record the old checkout and the late transfer as an exception for reconciliation.
+
+<Callout type="warning" title="No automatic refund or late-payment workflow">
+The current release records a late payment as an expired or invalid path, but does not provide a merchant-facing refund or remediation API. Do not document a manual wallet transfer as an Outpay product feature — see [settlement](/docs/platform/settlement).
+</Callout>
+
+## Expected result
+
+The late transfer is documented with enough evidence (transaction hash, amount, timestamps) for a manual, operator-approved resolution, without implying Outpay can reverse or automatically credit it.
+
+## Related documentation
+
+- [Payment lifecycle](/docs/platform/payment-lifecycle) — why a checkout expires in the first place.
+- [Transactions](/docs/merchants/transactions) — the merchant-facing status table.
+- [Support](/docs/resources/support) — escalating a specific late-payment case.

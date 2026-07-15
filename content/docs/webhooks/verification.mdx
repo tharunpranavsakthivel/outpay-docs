@@ -1,0 +1,101 @@
+---
+title: Verify webhook signatures
+description: Verify raw-body HMAC signatures before processing an event.
+audience:
+  - developer
+content_type: how-to
+product_area: webhooks
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Tabs, Tab } from "fumadocs-ui/components/tabs";
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Who this is for
+
+Developers implementing the merchant-side webhook receiver for `checkout.paid` events.
+
+## Before you begin
+
+- Your webhook signing secret (`whsec_...`), shown once when you save the endpoint in the Dashboard's **Developers** page.
+- A route capable of reading the raw, unparsed request body — see the warning below.
+
+The signature is computed over the exact bytes Outpay sent:
+
+```text
+HMAC_SHA256(webhook_secret, `${X-Outpay-Timestamp}.${raw_request_body}`)
+```
+
+Compare the resulting lowercase hexadecimal digest to the value after `v1=` using a timing-safe comparison. Reject stale timestamps and duplicate delivery IDs in your own handler — Outpay does not enforce a freshness window server-side beyond including the timestamp in the signed content.
+
+<Tabs items={["Node.js", "Next.js"]}>
+<Tab>
+
+```ts
+import { createHmac, timingSafeEqual } from "node:crypto";
+
+export function verifyOutpayWebhook(
+  rawBody: string,
+  timestamp: string,
+  signature: string,
+  secret: string,
+): boolean {
+  const expected = `v1=${createHmac("sha256", secret)
+    .update(`${timestamp}.${rawBody}`)
+    .digest("hex")}`;
+  const received = Buffer.from(signature);
+  const calculated = Buffer.from(expected);
+  return received.length === calculated.length && timingSafeEqual(received, calculated);
+}
+```
+
+</Tab>
+<Tab>
+
+```ts
+export async function POST(request: Request) {
+  const rawBody = await request.text();
+  const timestamp = request.headers.get("X-Outpay-Timestamp") ?? "";
+  const signature = request.headers.get("X-Outpay-Signature") ?? "";
+  const deliveryId = request.headers.get("X-Outpay-Delivery-ID") ?? "";
+
+  if (!verifyOutpayWebhook(rawBody, timestamp, signature, process.env.OUTPAY_WEBHOOK_SECRET!)) {
+    return Response.json({ error: "invalid signature" }, { status: 401 });
+  }
+
+  const event = JSON.parse(rawBody) as { event?: string; checkout_ref?: string };
+  if (event.event === "checkout.paid") {
+    // Look up deliveryId before this point and make fulfilment idempotent.
+  }
+  return new Response(null, { status: 204 });
+}
+```
+
+</Tab>
+</Tabs>
+
+<Callout type="error" title="Read the body once">
+In frameworks that consume the request stream, capture the raw text before parsing JSON. Re-serializing a parsed object can change whitespace or key ordering and will produce a different signature — always verify against the exact bytes received.
+</Callout>
+
+## Expected result
+
+An invalid or missing signature returns `401` without processing the event. A valid, previously unseen `checkout.paid` event triggers your fulfilment logic exactly once; a redelivered copy of the same event is recognized and skipped.
+
+## Common problems
+
+| Problem | Likely cause | Next step |
+| --- | --- | --- |
+| Every signature fails verification | The framework parsed the body as JSON before your handler could read the raw bytes. | Read the raw request body first — see the Next.js example above. |
+| The same order is fulfilled twice | The handler does not deduplicate on `checkout_ref` or `X-Outpay-Delivery-ID`. | Persist a processed-event record and check it before fulfilling — see [receive and process webhooks](/docs/guides/receive-webhooks). |
+| Verification passes but the event is stale | No timestamp-freshness check is implemented locally. | Reject signatures whose `X-Outpay-Timestamp` is older than your own tolerance window. |
+
+## Related documentation
+
+- [Events](/docs/webhooks/events) — the full `checkout.paid` payload.
+- [Receive and process webhooks](/docs/guides/receive-webhooks) — the complete idempotent handler pattern.
+- [Developer security](/docs/developers/security) — broader guidance on protecting webhook secrets.

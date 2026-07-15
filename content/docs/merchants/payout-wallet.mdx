@@ -1,0 +1,58 @@
+---
+title: Payout wallet
+description: Configure the merchant wallet that receives direct USDC transfers.
+audience:
+  - merchant
+content_type: how-to
+product_area: wallets
+api_version: v1
+status: published
+owner: merchant-success
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Steps, Step } from "fumadocs-ui/components/steps";
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Who this is for
+
+Merchant owners and administrators configuring or changing the wallet that receives customer payments.
+
+## Before you begin
+
+- Owner or administrator permission on the store.
+- Access to sign a message with the Base EVM wallet you want to use, either through a browser wallet extension or by pasting a manually produced signature.
+
+Outpay's v0.1 flow is non-custodial: funds move directly from the customer's wallet to the merchant's registered payout wallet. There is no platform balance and no automated payout step.
+
+## Configure the wallet
+
+<Steps>
+<Step>Open **Settings** and choose the payout-wallet section.</Step>
+<Step>Enter the Base EVM address you control.</Step>
+<Step>Sign the ownership challenge with that same wallet.</Step>
+<Step>Confirm the address and save.</Step>
+<Step>Send a small, controlled test amount only after verifying the displayed recipient and network.</Step>
+</Steps>
+
+<Callout type="error" title="Base USDC only">
+The token contract seeded by the application is `0x833589fCD6EDb6E08f4c7C32D4f71b54bdA02913`. Do not advertise another currency or network as accepted by this release.
+</Callout>
+
+## Expected result
+
+The wallet status changes to active once the ownership signature is verified. New checkouts display this wallet as the payment recipient immediately; existing open checkouts keep the wallet address they were created with.
+
+## Common problems
+
+| Problem | Likely cause | Next step |
+| --- | --- | --- |
+| Signature verification fails | The signature was produced with a different wallet, or signed outside the allowed time window. | Re-issue the challenge and sign it promptly with the exact wallet address entered. |
+| Customers report sending to an old address | A wallet change does not retroactively update checkouts created before the change. | Confirm which wallet a specific checkout displays before assuming a customer error. |
+
+## Related documentation
+
+- [Onboarding](/docs/merchants/onboarding) — the first time you register a payout wallet.
+- [Merchant security](/docs/merchants/security) — reviewing wallet changes safely.
+- [Settlement](/docs/platform/settlement) — why funds settle directly to this wallet.

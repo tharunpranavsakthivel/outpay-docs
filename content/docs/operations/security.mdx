@@ -1,0 +1,23 @@
+---
+title: Operational security
+description: Security controls for the application and its payment workers.
+audience:
+  - internal
+content_type: explanation
+product_area: security
+api_version: v1
+status: published
+owner: platform-engineering
+last_reviewed: 2026-07-15
+review_cycle_days: 45
+---
+
+The application implements hashed API keys, timing-safe secret comparison, encrypted merchant webhook secrets, parameterized SQL, wallet-ownership signatures, SSRF checks on merchant-configured webhook URLs, structured-log redaction, and rate limits across public and authenticated surfaces.
+
+The current release also has documented gaps: no configured CORS policy, no rate limiting on admin routes, and no automated blockchain-reorg handling. These are documented limitations, not capabilities to imply exist behind a generic security claim — see [system status](/docs/platform/system-status).
+
+## Related documentation
+
+- [Environment variables](/docs/operations/environment-variables) — where secrets and encryption keys are configured.
+- [Developer security](/docs/developers/security) — the integrator-facing counterpart to this page.
+- [Webhook verification](/docs/webhooks/verification) — the signature scheme this page's controls support.

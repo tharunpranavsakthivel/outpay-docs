@@ -1,0 +1,53 @@
+---
+title: Testing
+description: Test requests, webhook handling, and expiry without exposing secrets.
+audience:
+  - developer
+content_type: how-to
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Local application setup
+
+The application's own README documents Bun, PostgreSQL, Redis, provider configuration, and a local app origin on port `3001`.
+
+```bash
+bun install
+cp .env.example .env
+bun run db:migrate
+bun run dev
+```
+
+Use the disposable-database workflow documented in the application repository for integration tests. Never point a local test run at a Railway or production database.
+
+## Test your server adapter
+
+Mock the Outpay HTTP response and confirm your server:
+
+- Uses a server-only API key.
+- Sends a stable idempotency key.
+- Redirects to the exact `paymentUrl` returned by Outpay.
+- Never fulfils an order from the browser redirect alone.
+- Accepts a duplicate `checkout.paid` delivery without a second fulfilment.
+- Rejects an invalid signature before treating a webhook payload as trusted data.
+
+## Provider webhooks
+
+The application has an internal Alchemy webhook route, but the repository does not document a turnkey public-tunnel workflow for exercising it locally. Treat provider-webhook replay as an operator/integration-test concern, and record the raw-body and signature fixtures you use.
+
+<Callout type="warning" title="No test network exists">
+Do not document a testnet or a fake USDC token as if it were supported. The verified catalog is Base mainnet plus the native USDC contract — see [supported networks](/docs/platform/supported-networks).
+</Callout>
+
+## Related documentation
+
+- [Test an integration locally](/docs/guides/test-an-integration) — a fuller test-layer checklist.
+- [Production checklist](/docs/guides/production-checklist) — what to confirm before going live.
+- [Idempotency](/docs/developers/idempotency) — safe-retry behaviour to include in your test suite.

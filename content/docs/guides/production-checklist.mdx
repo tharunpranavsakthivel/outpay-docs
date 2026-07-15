@@ -1,0 +1,55 @@
+---
+title: Production-readiness checklist
+description: Controls to review before accepting real customer orders.
+audience:
+  - developer
+  - merchant
+content_type: how-to
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Credentials and access
+
+- [ ] API keys are stored in a secret manager and scoped minimally.
+- [ ] Test and live credentials, merchants, wallets, databases, and webhooks are kept separate.
+- [ ] Key rotation and revocation have been rehearsed.
+- [ ] Dashboard and admin access are least-privilege and reviewed regularly.
+
+## Payment correctness
+
+- [ ] The displayed recipient is the verified merchant payout wallet.
+- [ ] Customer instructions state Base, native USDC, and the exact amount.
+- [ ] The server fulfils only after a verified `checkout.paid` event or an operator-approved paid status.
+- [ ] Pending, failed, expired, underpaid, and overpaid paths are all observable.
+- [ ] Transaction hashes, checkout IDs, and request IDs are retained for reconciliation.
+
+## Webhooks and reliability
+
+- [ ] Raw-body HMAC verification and timestamp validation are covered by tests.
+- [ ] Delivery IDs and order transitions are unique and idempotent.
+- [ ] Retries, manual retry, and endpoint disablement are monitored.
+- [ ] HTTPS, rate limits, structured logs, alerting, and incident contacts are configured.
+
+## Beta gate
+
+- [ ] The current payment-verification audit is closed by the responsible operator.
+- [ ] Database backup and restore have been verified for the deployed environment.
+- [ ] Known gaps in reorg handling and mismatch remediation have an accepted risk decision.
+- [ ] The deployed API and webhook payload are pinned to a reviewed version.
+
+<Callout type="warning" title="The checklist is not a production certification">
+Outpay is beta software, and the payment-verification production-readiness gap is not fully closed. Completing these integration checks does not override that release-level warning — see [system status](/docs/platform/system-status).
+</Callout>
+
+## Related documentation
+
+- [Deployment](/docs/operations/deployment) — the operator-facing release checklist.
+- [System status](/docs/platform/system-status) — the current capability and readiness matrix.
+- [Changelog](/docs/changelog) — what changed since your last integration review.

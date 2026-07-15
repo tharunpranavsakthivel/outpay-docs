@@ -1,0 +1,59 @@
+---
+title: Receive and process webhooks
+description: Verify, deduplicate, and fulfil a checkout.paid event.
+audience:
+  - developer
+content_type: how-to
+product_area: webhooks
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+## Who this is for
+
+Developers implementing a production webhook receiver, beyond the basic signature check covered in [verify webhook signatures](/docs/webhooks/verification).
+
+## Before you begin
+
+- A working signature-verification function.
+- A database table (or equivalent) to record processed delivery IDs and order-fulfilment state.
+
+## Steps
+
+1. Capture the raw request body.
+2. Validate the timestamp window.
+3. Compute `v1=HMAC_SHA256(secret, timestamp + "." + rawBody)`.
+4. Compare signatures with a timing-safe function.
+5. Reject a delivery whose ID has already been processed.
+6. Parse the JSON body and confirm `event === "checkout.paid"`.
+7. Look up your order using the stored checkout reference.
+8. Commit a unique fulfilment transition, then return a `2xx` response.
+
+```ts
+// Pseudocode for the database boundary.
+await db.transaction(async (tx) => {
+  const inserted = await tx.insertProcessedWebhookIfAbsent(deliveryId);
+  if (!inserted) return;
+  await tx.markOrderPaidOnce({ orderId, checkoutRef, txHash });
+});
+```
+
+## Expected result
+
+Return a `2xx` status only after the event is durably recorded. If your endpoint returns a failure, Outpay retries according to its own [retry schedule](/docs/webhooks#retry-schedule).
+
+## Common problems
+
+| Problem | Likely cause | Next step |
+| --- | --- | --- |
+| Endpoint gets auto-disabled | Three consecutive full retry cycles all failed. | Fix the underlying failure, then re-save the endpoint in **Developers** to re-enable it and rotate the secret. |
+| Order fulfilled twice | The delivery-ID deduplication check runs after the fulfilment side effect, not before it. | Insert the processed-delivery record and check for fulfilment inside the same transaction, as shown above. |
+
+## Related documentation
+
+- [Verify webhook signatures](/docs/webhooks/verification) — the signature check this guide builds on.
+- [Events](/docs/webhooks/events) — the exact payload shape referenced above.
+- [Idempotency](/docs/developers/idempotency) — the equivalent pattern for checkout creation.

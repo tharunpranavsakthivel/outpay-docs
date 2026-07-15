@@ -1,0 +1,12 @@
+{
+  "title": "Platform",
+  "pages": [
+    "index",
+    "payment-lifecycle",
+    "supported-networks",
+    "confirmations",
+    "settlement",
+    "system-status"
+  ],
+  "defaultOpen": false
+}

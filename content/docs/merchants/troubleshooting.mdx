@@ -1,0 +1,35 @@
+---
+title: Merchant troubleshooting
+description: Diagnose common checkout, wallet, and notification problems.
+audience:
+  - merchant
+  - support
+content_type: how-to
+product_area: payments
+api_version: v1
+status: published
+owner: merchant-success
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+| Symptom | Likely cause | First action |
+| --- | --- | --- |
+| Checkout cannot be created | Missing onboarding, an inactive store, or an invalid amount/redirect URL. | Confirm store status and field validation. |
+| Payment remains pending | The transfer was not detected, or it is still below the required confirmation threshold. | Check the customer's transaction hash, recipient address, currency, and network. |
+| Payment is failed | Wrong currency or network, an amount mismatch, or a late payment. | Do not manually mark a payment as paid; escalate with the checkout reference and transaction hash. |
+| Link is expired | The checkout's time-to-live elapsed. | Create a new checkout — do not reuse an expired payment request. |
+| Webhook not received | The endpoint is unavailable, signature verification failed, or retries are exhausted. | Check **Developers → Webhooks** delivery history and use the manual retry action. |
+| Dashboard disagrees with a wallet explorer | An on-chain transfer is not the same thing as a payment Outpay has matched. | Treat Outpay's verified status as the product state of record, and investigate the mismatch before acting. |
+
+<Callout type="info" title="Support evidence">
+Include the checkout reference, request ID, transaction hash, timestamp, and destination wallet when escalating. Never include a secret key or webhook secret.
+</Callout>
+
+## Related documentation
+
+- [Transactions](/docs/merchants/transactions) — what each status means.
+- [Support](/docs/resources/support) — the full evidence checklist for an escalation.
+- [Handle an expired checkout](/docs/guides/handle-expired-payments) — recovering from a late transfer.

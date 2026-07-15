@@ -1,0 +1,45 @@
+---
+title: Getting started
+description: Understand the payment model and choose an integration path.
+audience:
+  - developer
+  - merchant
+content_type: explanation
+product_area: overview
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Who this is for
+
+This section is for anyone setting up Outpay for the first time: a developer integrating the public API, or a merchant administrator using only the Outpay Dashboard.
+
+Outpay has two entry points today:
+
+- **Outpay Dashboard** — create hosted checkouts and shareable payment links without writing any code.
+- **Public v1 API** — create and read checkouts, and list payments, using a scoped bearer API key from your own server.
+
+Both paths produce the same non-custodial checkout: a customer pays native USDC directly to the merchant's registered Base wallet.
+
+<Cards>
+  <Card href="/docs/getting-started/quickstart" title="Quickstart" description="Go from an API key to a hosted checkout in one integration." />
+  <Card href="/docs/getting-started/authentication" title="Authentication" description="Choose Dashboard sessions or a scoped public API key." />
+  <Card href="/docs/getting-started/concepts" title="Core concepts" description="Learn how checkout, detection, confirmation, and settlement fit together." />
+  <Card href="/docs/getting-started/environments" title="Environments" description="Separate test and live credentials and configuration." />
+</Cards>
+
+<Callout type="warning" title="Only Base USDC is verified">
+The checked-in seed data and payment matcher support native USDC on Base only. Do not send another asset, or use another network, for a checkout created by this release.
+</Callout>
+
+## Related documentation
+
+- [Merchant onboarding](/docs/merchants/onboarding) — create a store and verify a payout wallet from the Dashboard.
+- [API reference](/docs/api-reference/overview) — the full public v1 endpoint contract.
+- [Core concepts](/docs/getting-started/concepts) — the terms used throughout this documentation.

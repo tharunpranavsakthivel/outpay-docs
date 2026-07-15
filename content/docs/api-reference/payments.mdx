@@ -1,0 +1,61 @@
+---
+title: Payments
+description: List payments belonging to the authenticated merchant.
+audience:
+  - developer
+content_type: reference
+product_area: payments
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 30
+---
+
+## `GET /api/v1/payments`
+
+**Authentication:** bearer API key with the `payments:read` scope.
+
+**Query parameters**
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `limit` | integer | `25` | Minimum `1`, maximum `100`. |
+| `status` | string | unset | One of `paid`, `pending`, `failed`, `expired`. |
+
+```bash
+curl "$OUTPAY_API_BASE_URL/api/v1/payments?limit=25&status=paid" \
+  -H "Authorization: Bearer $OUTPAY_API_KEY"
+```
+
+**Response — `200 OK`:**
+
+```json
+{
+  "data": [
+    {
+      "id": "pay_9d21f7",
+      "checkoutId": "chk_4f21a9c3b7e04d18",
+      "status": "paid",
+      "amount": "49.99",
+      "currency": "USDC",
+      "chain": "base",
+      "txHash": "0xabc123...",
+      "fromAddress": "0xCustomerAddress",
+      "toAddress": "0xMerchantPayoutWallet",
+      "confirmedAt": "2026-07-15T11:45:00.000Z",
+      "createdAt": "2026-07-15T11:40:00.000Z"
+    }
+  ]
+}
+```
+
+Results are ordered by confirmation time, falling back to creation time, most recent first, and capped by `limit`. This endpoint does not implement offset or cursor pagination — do not design a client SDK around a pagination contract this route does not expose.
+
+**Errors:** `400 VALIDATION_FAILED`, `401 INVALID_API_KEY`, `403 FORBIDDEN`, `429 PAYMENTS_LIST_RATE_LIMITED` (120 requests/minute per merchant), `500 PAYMENTS_READ_FAILED`.
+
+## Related documentation
+
+- [Schemas](/docs/api-reference/schemas) — the full payment field reference.
+- [Payment lifecycle](/docs/platform/payment-lifecycle) — what each status means.
+- [Not implemented](/docs/developers/payments#not-implemented) — refunds, subscriptions, and pagination gaps to plan around.

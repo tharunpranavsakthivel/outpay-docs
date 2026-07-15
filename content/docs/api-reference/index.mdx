@@ -1,0 +1,28 @@
+---
+title: API reference
+description: The code-verified Outpay public v1 API.
+audience:
+  - developer
+content_type: reference
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 30
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Cards, Card } from "fumadocs-ui/components/card";
+
+<Callout type="warning" title="No OpenAPI document is published">
+This reference is manually maintained from the route handlers and validation schemas, not generated from a specification — the repository contains an OpenAPI gap analysis, not a published spec. Unversioned Dashboard and admin routes are not part of this contract; see [deliberately excluded routes](/docs/api-reference/overview#deliberately-excluded).
+</Callout>
+
+<Cards>
+  <Card href="/docs/api-reference/overview" title="Overview" description="Base path, headers, authentication, status codes, and response conventions." />
+  <Card href="/docs/api-reference/checkout-sessions" title="Checkouts" description="Create and retrieve a merchant-scoped checkout." />
+  <Card href="/docs/api-reference/payments" title="Payments" description="List merchant payments with filters." />
+  <Card href="/docs/api-reference/errors" title="Errors" description="The error envelope and every documented error code." />
+  <Card href="/docs/api-reference/schemas" title="Schemas" description="Stable fields and status distinctions in the beta contract." />
+</Cards>

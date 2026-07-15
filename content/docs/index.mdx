@@ -1,0 +1,93 @@
+---
+title: Outpay documentation
+description: Accept native USDC on Base with a non-custodial hosted checkout, a scoped REST API, and signed payment webhooks.
+audience:
+  - merchant
+  - developer
+  - support
+content_type: explanation
+product_area: overview
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Card, Cards } from "fumadocs-ui/components/card";
+import { Callout as FumadocsCallout } from "fumadocs-ui/components/callout";
+
+<div className="not-prose outpay-docs-hero mb-10">
+
+<div className="outpay-hero-content">
+<p className="outpay-hero-eyebrow">Outpay v0.1 Beta · documentation</p>
+
+<h1 className="outpay-hero-title">Payments that settle to your wallet.</h1>
+
+<p className="outpay-hero-copy">Create a checkout, send your customer to a hosted Outpay Checkout page, and receive a verified <code>checkout.paid</code> webhook when Outpay detects the matching USDC transfer on Base.</p>
+
+<div className="outpay-hero-actions">
+  <a className="outpay-hero-primary" href="/docs/getting-started/quickstart">
+    Start the quickstart
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+  </a>
+  <a className="outpay-hero-secondary" href="/docs/api-reference/overview">
+    Explore the API
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></svg>
+  </a>
+</div>
+
+<div className="outpay-hero-facts" aria-label="Outpay platform facts">
+  <span>USDC on Base</span>
+  <span>Non-custodial</span>
+  <span>Signed webhooks</span>
+</div>
+</div>
+
+</div>
+
+<FumadocsCallout type="warning" title="Outpay v0.1 Beta">
+Outpay is beta software. API routes, response fields, webhook payloads, and payment statuses may change before a stable release, and the payment-verification pipeline has not completed an independent production-readiness review. Use test-mode credentials and a controlled merchant account until your own review is complete. See [known limitations](/docs/platform/system-status).
+</FumadocsCallout>
+
+## Who this is for
+
+<Cards>
+  <Card href="/docs/getting-started/quickstart" title="Developers" description="Create your first checkout with the public API and redirect a customer to Outpay Checkout." />
+  <Card href="/docs/merchants/onboarding" title="Merchants" description="Create a store, verify a payout wallet, and manage payments from the Outpay Dashboard." />
+  <Card href="/docs/api-reference/overview" title="API reference" description="Use the code-verified v1 endpoints, request and response shapes, errors, and retry behaviour." />
+  <Card href="/docs/webhooks/verification" title="Webhook handling" description="Verify a signed checkout.paid event before you update an order." />
+</Cards>
+
+## How a payment works
+
+Outpay is non-custodial: a customer sends native USDC directly to the merchant's registered payout wallet on Base. Outpay watches for the transfer, matches it to the checkout's amount and recipient, waits for the required confirmations, and notifies the merchant.
+
+<div className="grid gap-3 md:grid-cols-3">
+
+<div className="outpay-flow-card rounded-lg border border-fd-border p-4"><p className="font-mono text-xs text-fd-muted-foreground">01</p><p className="mt-2 font-medium">Create</p><p className="mt-1 text-sm text-fd-muted-foreground">Create a checkout from the Outpay Dashboard or `POST /api/v1/checkouts`.</p></div>
+<div className="outpay-flow-card rounded-lg border border-fd-border p-4"><p className="font-mono text-xs text-fd-muted-foreground">02</p><p className="mt-2 font-medium">Detect</p><p className="mt-1 text-sm text-fd-muted-foreground">Outpay matches a Base USDC transfer to the expected recipient and amount.</p></div>
+<div className="outpay-flow-card rounded-lg border border-fd-border p-4"><p className="font-mono text-xs text-fd-muted-foreground">03</p><p className="mt-2 font-medium">Confirm</p><p className="mt-1 text-sm text-fd-muted-foreground">Your server receives a signed `checkout.paid` webhook once confirmations are satisfied.</p></div>
+
+</div>
+
+## What Outpay supports today
+
+| Property | Current release |
+| --- | --- |
+| Network | Base mainnet only |
+| Currency | Native USDC only |
+| Settlement | Non-custodial, direct to the merchant's payout wallet |
+| Webhook events | `checkout.paid` only |
+| SDKs | None — integrate with cURL, `fetch`, or `requests` |
+| OpenAPI specification | Not yet published |
+
+## Documentation status
+
+This documentation is derived from the Outpay application's route handlers, validation schemas, and database migrations, and is kept in sync with that code. Dashboard, admin, provider-integration, billing, and future-SDK material is explicitly labelled **Available**, **Partially implemented**, **Planned**, or **Not found** so that a disagreement between documentation and product behaviour never goes unflagged. See [system status](/docs/platform/system-status) for the current capability matrix.
+
+## Related documentation
+
+- [Getting started](/docs/getting-started) — choose an integration path and authenticate your first request.
+- [API reference](/docs/api-reference/overview) — endpoints, schemas, and errors.
+- [Changelog](/docs/changelog) — what changed, and whether it requires action.

@@ -1,0 +1,19 @@
+<!-- @dsCard group="Spacing" viewport="700x160" name="Spacing Scale" subtitle="Off-grid 2px unit: 4 / 8 / 16 / 32 / 64" -->
+<!DOCTYPE html>
+<html data-theme="light">
+<head>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:16px;background:var(--background-default);font-family:var(--font-mono);font-size:11px;color:var(--foreground-lighter);}
+  .row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .bar{background:var(--color-brand-900);height:14px;border-radius:2px;}
+</style>
+</head>
+<body>
+  <div class="row"><div class="bar" style="width:var(--spacing-xs)"></div>xs — 4px</div>
+  <div class="row"><div class="bar" style="width:var(--spacing-sm)"></div>sm — 8px</div>
+  <div class="row"><div class="bar" style="width:var(--spacing-md)"></div>md — 16px</div>
+  <div class="row"><div class="bar" style="width:var(--spacing-lg)"></div>lg — 32px</div>
+  <div class="row"><div class="bar" style="width:var(--spacing-xl)"></div>xl — 64px</div>
+</body>
+</html>

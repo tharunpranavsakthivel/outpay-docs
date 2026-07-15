@@ -1,0 +1,43 @@
+---
+title: FAQ
+description: Frequently asked questions about Outpay v0.1 Beta.
+audience:
+  - developer
+  - merchant
+content_type: reference
+product_area: overview
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+## Does Outpay custody funds?
+
+No. The implemented flow sends USDC directly to the merchant's registered payout wallet — see [settlement](/docs/platform/settlement).
+
+## Which networks and currencies are supported?
+
+Native USDC on Base mainnet only. Other currencies and networks are not verified — see [supported networks and assets](/docs/platform/supported-networks).
+
+## Are SDKs available?
+
+No official SDK package is published for any language. Use the REST API with server-side `fetch`, cURL, or another HTTP client — see [integration examples](/docs/developers/examples).
+
+## Can I refund a payment?
+
+No. There is no refund endpoint or automatic refund flow — see [payments — not implemented](/docs/developers/payments#not-implemented).
+
+## Is v0.1 production-ready?
+
+Not verified. Outpay's own release notes state the payment-verification pipeline is still undergoing audit remediation — see [system status](/docs/platform/system-status).
+
+## Does a success redirect prove payment?
+
+No. Use a verified `checkout.paid` webhook or a server-side status read — see [do not trust the redirect](/docs/developers#the-recommended-lifecycle).
+
+## Related documentation
+
+- [Glossary](/docs/resources/glossary) — definitions for the terms used above.
+- [Support](/docs/resources/support) — escalating a question this FAQ doesn't answer.

@@ -1,0 +1,28 @@
+<!-- @dsCard group="Colors" viewport="700x220" name="Semantic — Surfaces & Text" subtitle="background / card / popover / secondary + foreground steps" -->
+<!DOCTYPE html>
+<html data-theme="light">
+<head>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body{margin:0;padding:16px;background:var(--background-default);font-family:var(--font-sans);}
+  .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+  .sw{height:64px;border-radius:8px;border:1px solid var(--border-default);display:flex;align-items:flex-end;padding:8px;font-size:11px;color:var(--foreground-lighter);font-family:var(--font-mono);}
+  .txt{display:flex;gap:16px;margin-top:14px;}
+  .txt span{font-size:13px;}
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="sw" style="background:var(--background-default)">background</div>
+    <div class="sw" style="background:var(--card)">card</div>
+    <div class="sw" style="background:var(--popover)">popover</div>
+    <div class="sw" style="background:var(--secondary)">secondary</div>
+    <div class="sw" style="background:var(--muted)">muted</div>
+  </div>
+  <div class="txt">
+    <span style="color:var(--foreground-default)">foreground</span>
+    <span style="color:var(--muted-foreground)">muted-foreground</span>
+    <span style="color:var(--tertiary-foreground)">tertiary-foreground</span>
+  </div>
+</body>
+</html>

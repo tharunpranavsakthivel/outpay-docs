@@ -1,0 +1,40 @@
+---
+title: Core concepts
+description: A plain-language map of Outpay's payment objects and blockchain terms.
+audience:
+  - developer
+  - merchant
+content_type: explanation
+product_area: platform
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 180
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+| Concept | Meaning in Outpay |
+| --- | --- |
+| Checkout | A merchant-created payment request with an amount, redirect URLs, metadata, a recipient wallet, and an expiry. Internally called a checkout session; the public API calls it a checkout. |
+| Outpay Checkout | The customer-facing hosted page (`/checkout/{id}`) that displays payment instructions and polls status. |
+| Payment intent | Internal matching state associated with a checkout. It is not a public API object. |
+| Payment | An on-chain transfer matched to a checkout. |
+| Base | The only network seeded and matched by the current release. |
+| USDC | The only enabled currency in the seeded Base catalog. Amounts are represented as decimal strings, never floating-point numbers, at the API boundary. |
+| Payout wallet | The merchant-owned wallet that receives the customer's transfer directly. |
+| Confirmation | A block-depth signal Outpay waits for before marking a detected payment `paid`. |
+| Transaction hash | The on-chain identifier used to inspect a transfer in a block explorer. |
+| Webhook | A signed outbound HTTP request from Outpay to the merchant's configured endpoint. |
+| Idempotency key | A merchant-generated key that lets checkout creation safely replay the original response instead of creating a duplicate. |
+
+<Callout type="info" title="Non-custodial means direct settlement">
+Outpay does not hold funds or perform a payout transfer. The customer pays the merchant's registered wallet directly — see [settlement](/docs/platform/settlement).
+</Callout>
+
+## Related documentation
+
+- [Payment lifecycle](/docs/platform/payment-lifecycle) — how a checkout moves from created to paid or terminal.
+- [Supported networks and assets](/docs/platform/supported-networks) — what the current release actually matches.
+- [Glossary](/docs/resources/glossary) — the full terminology reference.

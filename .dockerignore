@@ -1,0 +1,20 @@
+node_modules
+.next
+.source
+.git
+.github
+.vscode
+.DS_Store
+
+# project docs/design assets not needed to build or run the app
+docs
+design-system
+
+Dockerfile
+.dockerignore
+railway.json
+
+*.tsbuildinfo
+npm-debug.log*
+.env
+.env.*

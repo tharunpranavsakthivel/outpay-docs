@@ -1,0 +1,41 @@
+---
+title: System status
+description: Current capability and readiness signals for the beta release.
+audience:
+  - developer
+  - merchant
+  - support
+content_type: reference
+product_area: platform
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 30
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Hosted checkout | Beta | Fully database-backed, with live polling and server-enforced expiry. |
+| Base USDC detection | Experimental | Provider-webhook and RPC-reconciliation detection paths both exist and run; end-to-end production readiness is not yet independently verified. |
+| Merchant webhooks | Partial | `checkout.paid` is implemented; other event types are not yet dispatched. |
+| API keys | Available | Scoped, environment-aware (`test`/`live`), revocable, hashed at rest. |
+| Idempotency (checkout creation) | Available | Full request/response replay via the public API. |
+| Refunds | Not implemented | No refund route, worker, or manual-remediation API exists. |
+| Reorg handling | Not verified | Do not imply automated reorg detection or recovery. |
+| Underpay/overpay remediation | Not implemented | Mismatches are recorded; there is no merchant-facing acceptance or correction workflow. |
+| Official SDKs | Planned | No SDK package is published for any language. |
+| OpenAPI specification | Planned | A gap analysis exists; no specification has been published. |
+| Production database backup/restore | Unverified | Recorded as pending operator verification in the deployment record. |
+
+<Callout type="warning" title="Not a service-health endpoint">
+This page is a product-status summary, not a live service-health check. For deployment-specific incidents, see your own operational monitoring and the [changelog](/docs/changelog).
+</Callout>
+
+## Related documentation
+
+- [Known limitations — v0.1 Beta](/docs/changelog/v0.1-beta#known-limitations) — the full, dated limitation list for this release.
+- [Payment lifecycle](/docs/platform/payment-lifecycle) — how detection and confirmation fit together today.
+- [Production checklist](/docs/guides/production-checklist) — what to verify before relying on any "Beta" or "Experimental" row above.

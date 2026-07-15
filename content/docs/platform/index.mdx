@@ -1,0 +1,24 @@
+---
+title: Platform concepts
+description: The payment, network, and settlement model behind Outpay.
+audience:
+  - developer
+  - merchant
+content_type: explanation
+product_area: platform
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 180
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+
+<Cards>
+  <Card href="/docs/platform/payment-lifecycle" title="Payment lifecycle" description="From checkout creation through detection, confirmation, and expiry." />
+  <Card href="/docs/platform/supported-networks" title="Networks and assets" description="What the current implementation actually matches." />
+  <Card href="/docs/platform/confirmations" title="Confirmations and finality" description="Why a detected transfer is not immediately a paid checkout." />
+  <Card href="/docs/platform/settlement" title="Settlement" description="Why funds go directly to the merchant's wallet." />
+  <Card href="/docs/platform/system-status" title="System status" description="The current capability and readiness matrix for the beta release." />
+</Cards>

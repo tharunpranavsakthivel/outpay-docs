@@ -1,0 +1,135 @@
+---
+title: Checkouts
+description: Create and retrieve a hosted checkout.
+audience:
+  - developer
+content_type: reference
+product_area: checkout
+api_version: v1
+status: published
+owner: developer-docs
+last_reviewed: 2026-07-15
+review_cycle_days: 30
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## Create a checkout
+
+```http
+POST /api/v1/checkouts
+```
+
+**Authentication:** bearer API key with the `checkouts:create` scope.
+
+**Headers**
+
+| Header | Required | Description |
+| --- | --- | --- |
+| `Authorization` | Yes | `Bearer <API_KEY>`. |
+| `Content-Type` | Yes | `application/json`. |
+| `Idempotency-Key` | No, recommended | 1–255 characters; letters, digits, `:`, `_`, `-` only. Safely replays the original response on retry. |
+
+**Request body**
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `amount` | string | Yes | Positive decimal amount, up to two decimal places (for example `"49.99"`). |
+| `chain` | string | Yes | Must be the literal `"base"`. |
+| `currency` | string | Yes | Must be the literal `"USDC"`. |
+| `successUrl` | string (URL) | Yes | Absolute HTTPS URL used after a successful payment. |
+| `cancelUrl` | string (URL) or `null` | No | Absolute HTTPS URL if the customer cancels. Empty input is normalised to `null`. |
+| `customerEmail` | string (email) or `null` | No | Used to find or create a customer record. Empty input is normalised to `null`. |
+| `metadata` | object | No | Merchant-defined JSON metadata, default `{}`. `metadata.orderId` is used as the Dashboard label when present. |
+
+```bash
+curl "$OUTPAY_API_BASE_URL/api/v1/checkouts" -X POST \
+  -H "Authorization: Bearer $OUTPAY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: order_12345_checkout" \
+  --data '{
+    "amount": "49.99",
+    "chain": "base",
+    "currency": "USDC",
+    "successUrl": "https://merchant.example/orders/order_12345/success",
+    "cancelUrl": "https://merchant.example/orders/order_12345/cancel",
+    "customerEmail": "customer@example.com",
+    "metadata": {"orderId": "order_12345"}
+  }'
+```
+
+**Response — `201 Created`** (or the original status and body, replayed, if the same `Idempotency-Key` was already used with an identical request):
+
+```json
+{
+  "id": "chk_4f21a9c3b7e04d18",
+  "status": "pending_payment",
+  "amount": "49.99",
+  "chain": "base",
+  "currency": "USDC",
+  "expiresAt": "2026-07-15T12:00:00.000Z",
+  "paymentUrl": "https://your-outpay-host.example/checkout/6f3a9b2c-1e4d-4a8b-9c2f-8d1e2f3a4b5c",
+  "recipient": {
+    "address": "0xMerchantPayoutWallet",
+    "tokenContract": "0x833589fCD6eDb6E08f4C7C32D4f71b54bdA02913"
+  }
+}
+```
+
+The displayed wallet is the merchant's registered payout wallet. Never substitute a wallet address from your own order system.
+
+**Errors:** `400 VALIDATION_FAILED`, `400 INVALID_IDEMPOTENCY_KEY`, `401 INVALID_API_KEY`, `403 FORBIDDEN`, `409 EXPIRED_IDEMPOTENCY_KEY`, `409 IDEMPOTENCY_KEY_REUSED`, `409 MERCHANT_NOT_ACTIVE`, `429 CHECKOUT_CREATE_RATE_LIMITED` (60 requests/minute per merchant), `500 CHECKOUT_CREATE_FAILED`. See [errors](/docs/api-reference/errors) for the full catalogue.
+
+## Retrieve a checkout
+
+```http
+GET /api/v1/checkouts/{id}
+```
+
+**Authentication:** bearer API key with `checkouts:read` or `payments:read`.
+
+**Path parameter:** `id` — the checkout reference returned by creation.
+
+```bash
+curl "$OUTPAY_API_BASE_URL/api/v1/checkouts/chk_4f21a9c3b7e04d18" \
+  -H "Authorization: Bearer $OUTPAY_API_KEY"
+```
+
+**Response — `200 OK`:**
+
+```json
+{
+  "id": "chk_4f21a9c3b7e04d18",
+  "status": "pending_payment",
+  "amount": "49.99",
+  "chain": "base",
+  "currency": "USDC",
+  "customerEmail": null,
+  "expiresAt": "2026-07-15T12:00:00.000Z",
+  "successUrl": "https://merchant.example/orders/order_12345/success",
+  "cancelUrl": null,
+  "metadata": { "orderId": "order_12345" },
+  "paymentUrl": "https://your-outpay-host.example/checkout/6f3a9b2c-1e4d-4a8b-9c2f-8d1e2f3a4b5c",
+  "recipient": {
+    "address": "0xMerchantPayoutWallet",
+    "tokenContract": "0x833589fCD6eDb6E08f4C7C32D4f71b54bdA02913"
+  },
+  "payment": null
+}
+```
+
+`payment` is `null` until a transfer is detected, then reflects the matched transfer's status, amount, transaction hash, and confirmation timestamp — see [schemas](/docs/api-reference/schemas).
+
+A checkout that does not belong to the authenticated merchant returns `404 CHECKOUT_NOT_FOUND` rather than another merchant's data.
+
+**Errors:** `400 VALIDATION_FAILED`, `401 INVALID_API_KEY`, `403 FORBIDDEN`, `404 CHECKOUT_NOT_FOUND`, `429 CHECKOUT_STATUS_RATE_LIMITED` (300 requests/minute per merchant), `500 CHECKOUT_READ_FAILED`.
+
+<Callout type="warning" title="Status vocabulary is beta">
+The public API, the hosted checkout page, and the internal database currently use three overlapping but different status vocabularies. Consume the values this endpoint returns; do not assume they match the hosted-checkout page's status values. See [payment lifecycle](/docs/platform/payment-lifecycle).
+</Callout>
+
+## Related documentation
+
+- [Idempotency](/docs/developers/idempotency) — how retries are handled on this route.
+- [Schemas](/docs/api-reference/schemas) — the full checkout and payment field reference.
+- [Webhooks](/docs/webhooks) — get notified instead of polling.

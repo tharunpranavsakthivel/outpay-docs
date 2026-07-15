@@ -1,0 +1,56 @@
+/*
+ * Per-theme knob overrides — extracted verbatim from Supabase's
+ * packages/ui/build/css/themes/light.css and dark.css.
+ * Only the small set of INPUT variables changes here; every semantic color
+ * (--background, --foreground, --card, --border...) is recomputed from these
+ * automatically via colors-semantic.css.
+ *
+ * Outpay defaults to LIGHT (data-theme="light" on <html>), matching the
+ * Stripe / Coinbase Commerce-adjacent fintech direction. Dark is supported
+ * as an alternate theme (Supabase's own default) — set data-theme="dark".
+ */
+
+[data-theme='light'] {
+  --hue: 159; /* @kind other */
+  /* warm-gray surface ramp against the green brand */
+  --surface-hue: 34; /* @kind other */
+  --chroma: 0.004; /* @kind other */
+  --surface: 0.98; /* @kind other */
+  --elevation-step: 0.024; /* @kind other */
+  --contrast: 0.53; /* @kind other */
+  --foreground-lightness: 0.16; /* @kind other */
+  --muted-foreground-level: 0.68; /* @kind other */
+  --tertiary-foreground-level: 0.48; /* @kind other */
+
+  --warning-lightness: 0.68; /* @kind other */
+  --destructive-lightness: 0.52; /* @kind other */
+  --info-lightness: 0.54; /* @kind other */
+
+  --code-block-5: 14deg 80.4% 58%; /* @kind color */
+  --code-block-4: 276.3deg 60% 52.9%; /* @kind color */
+  --code-block-3: 83.8deg 61.6% 48%; /* @kind color */
+  --code-block-2: 33.1deg 80% 52.9%; /* @kind color */
+  --code-block-1: 170.6deg 43.2% 51%; /* @kind color */
+
+  --secondary-default: 247.8deg 100% 70%; /* @kind color */
+  --secondary-400: 248.3deg 54.5% 25.9%; /* @kind color */
+  --secondary-200: 248deg 53.6% 11%; /* @kind color */
+  --brand-link: 153.4deg 100% 36.7%; /* @kind color */
+  --brand-default: 152.9deg 60% 52.9%; /* @kind color */
+  --brand-600: 156.5deg 86.5% 26.1%; /* @kind color */
+  --brand-500: 155.3deg 78.4% 40%; /* @kind color */
+  --brand-400: 151.3deg 66.9% 66.9%; /* @kind color */
+  --brand-300: 147.5deg 72% 80.4%; /* @kind color */
+  --brand-200: 147.6deg 72.5% 90%; /* @kind color */
+  --warning-600: 30.3deg 80.3% 47.8%; /* @kind color */
+  --warning-500: 36.3deg 85.7% 67.1%; /* @kind color */
+  --warning-400: 41.9deg 100% 81.8%; /* @kind color */
+  --warning-300: 44.3deg 100% 91.8%; /* @kind color */
+  --warning-200: 40deg 81.8% 97.8%; /* @kind color */
+  --destructive-default: 10.2deg 77.9% 53.9%; /* @kind color */
+  --destructive-600: 9.9deg 82% 43.5%; /* @kind color */
+  --destructive-500: 10.4deg 77.1% 79.4%; /* @kind color */
+  --destructive-400: 7.1deg 91.3% 91%; /* @kind color */
+  --destructive-300: 7.1deg 100% 96.7%; /* @kind color */
+  --destructive-200: 0deg 100% 99.4%; /* @kind color */
+}

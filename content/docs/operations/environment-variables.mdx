@@ -1,0 +1,39 @@
+---
+title: Environment variables
+description: Configuration inventory for a deployed Outpay application.
+audience:
+  - internal
+content_type: reference
+product_area: operations
+api_version: v1
+status: published
+owner: platform-engineering
+last_reviewed: 2026-07-15
+review_cycle_days: 60
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+| Group | Variables |
+| --- | --- |
+| App | `APP_BASE_URL`, `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET` |
+| Checkout | `OUTPAY_CHECKOUT_TTL_SECONDS`, `OUTPAY_CHECKOUT_DETECTED_GRACE_SECONDS` |
+| Database | `DATABASE_URL`, `DATABASE_PUBLIC_URL`, `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD` |
+| Queue | `REDIS_URL` |
+| Base providers | `ALCHEMY_BASE_RPC_URL`, `ALCHEMY_WEBHOOK_SIGNING_KEY`, `ALCHEMY_NOTIFY_WEBHOOK_ID`, `CHAINSTACK_BASE_RPC_URL` |
+| Provider routing | `RPC_PRIMARY_PROVIDER`, `RPC_SECONDARY_PROVIDER`, `RPC_FAILOVER_ENABLED`, `RPC_TIMEOUT_MS` |
+| Webhooks | `MERCHANT_WEBHOOK_SECRET_ENCRYPTION_KEY` |
+| Storage | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3`, `TIGRIS_BUCKET_NAME` |
+| Observability | `OUTPAY_LOG_LEVEL`, optional `OUTPAY_ALERT_WEBHOOK_URL` |
+
+The repository also ships reserved `OUTPAY_*_KEY` placeholders that are not yet consumed by any application code path. Do not tell integrators those placeholders are usable credentials.
+
+<Callout type="error" title="Never copy production secrets into documentation">
+Use `.env.example` as a variable-name reference only. Replace every value, and keep production secrets in Railway or another secret manager — never in a document, ticket, or chat message.
+</Callout>
+
+## Related documentation
+
+- [Deployment](/docs/operations/deployment) — where these variables are consumed.
+- [Environments](/docs/getting-started/environments) — the developer-facing view of test/live separation.
+- [Operational security](/docs/operations/security) — secret handling and rotation guidance.

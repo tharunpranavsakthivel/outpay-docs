@@ -8,6 +8,11 @@ import { createRelativeLink } from "fumadocs-ui/mdx";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/components/mdx";
+import {
+  createPageMetadata,
+  pageStructuredData,
+  serializeJsonLd,
+} from "@/lib/seo";
 import { source } from "@/lib/source";
 
 export const revalidate = false;
@@ -24,10 +29,11 @@ export async function generateMetadata(props: {
 
   if (!page) return {};
 
-  return {
-    title: page.data.title,
-    description: page.data.description,
-  };
+  return createPageMetadata({
+    title: page.data.title ?? "Outpay documentation",
+    description: page.data.description ?? "Outpay payment documentation.",
+    path: page.url,
+  });
 }
 
 export default async function Page(props: {
@@ -42,6 +48,20 @@ export default async function Page(props: {
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is serialized from static page data.
+        dangerouslySetInnerHTML={{
+          __html: serializeJsonLd(
+            pageStructuredData({
+              title: page.data.title ?? "Outpay documentation",
+              description:
+                page.data.description ?? "Outpay payment documentation.",
+              path: page.url,
+            }),
+          ),
+        }}
+      />
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>

@@ -27,6 +27,6 @@ export function baseOptions(): BaseLayoutProps {
         </>
       ),
     },
-    links: [{ text: "Status", url: "/docs/platform/system-status" }],
+    links: [{ text: "Platform status", url: "/docs/platform/system-status" }],
   };
 }

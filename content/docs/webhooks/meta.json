@@ -1,5 +1,5 @@
 {
-  "title": "Webhooks",
+  "title": "Payment webhooks",
   "pages": ["index", "events", "verification"],
   "defaultOpen": false
 }

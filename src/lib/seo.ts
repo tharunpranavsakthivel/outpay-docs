@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const siteName = "Outpay Docs";
-export const defaultSiteUrl = "https://outpay.tech";
+export const defaultSiteUrl = "https://docs.outpay.tech";
 export const siteDescription =
   "Technical documentation for accepting USDC payments on Base with Outpay's hosted checkout, payment API, and signed webhooks.";
 export const defaultKeywords = [

@@ -15,7 +15,7 @@ Open `http://localhost:3000/docs`. The root route redirects there.
 
 Set `NEXT_PUBLIC_SITE_URL` to the public documentation origin in each
 deployment. It controls canonical URLs, sitemap URLs, robots directives, and
-social metadata; the repository's documented `https://outpay.tech` origin is
+social metadata; the repository's documented `https://docs.outpay.tech` origin is
 used only as a safe fallback.
 
 ## Verification

@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/api/", "/_next/"],
     },
-    sitemap: [absoluteUrl("/sitemap.xml"), absoluteUrl("/docs/sitemap.xml")],
+    sitemap: absoluteUrl("/sitemap.xml"),
     host: absoluteUrl("/"),
   };
 }
